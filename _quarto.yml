@@ -1,0 +1,25 @@
+project:
+  type: website
+  #output-dir: _site
+
+website:
+  title: "Shouvik Sur"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: research.qmd
+        text: Research
+      - href: community-outreach.qmd
+        text: Community & Outreach
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: false
+
+
+

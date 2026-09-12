@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "community-outreach.html",
+    "href": "community-outreach.html",
+    "title": "Community & Outreach",
+    "section": "",
+    "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nArtificial heavy fermions in kagome metals: Topology and quantum criticality based on compact molecular orbitals\nMax Planck Institute for the Physics of Complex Systems, Dresden, Germany (April, 2025) [unable to attend]\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nNon-Fermi liquids in flat-band systems\nNational High Magnetic Field Laboratory, Tallahassee, FL (January, 2024)"
+  },
+  {
+    "objectID": "community-outreach.html#recent-talks",
+    "href": "community-outreach.html#recent-talks",
+    "title": "Community & Outreach",
+    "section": "",
+    "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nQuantum criticality in cavity quantum materials\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (2023)\nQuantum critical fluids and non-Fermi liquid dynamics\nMax Planck Institute for the Physics of Complex Systems (MPI-PKS), Dresden, Germany (2023)"
+  },
+  {
+    "objectID": "community-outreach.html#teaching",
+    "href": "community-outreach.html#teaching",
+    "title": "Community & Outreach",
+    "section": "Teaching",
+    "text": "Teaching\n\nCourse Instruction & Teaching Assistance\n\nIntroduction to Solid State Physics I [Graduate course] Guest Lecturer | Rice University | Fall 2025\nIntroduction to Solid State Physics I [Graduate course] Guest Lecturer | Rice University | Fall 2024\nThermodynamics and Statistical Mechanics [Undergraduate course] Substitute Lecturer | McMaster University | Fall 2012"
+  },
+  {
+    "objectID": "community-outreach.html#organizational-activities",
+    "href": "community-outreach.html#organizational-activities",
+    "title": "Community & Outreach",
+    "section": "Organizational Activities",
+    "text": "Organizational Activities\n\nCo-Organizer, Spring School on Electron Correlations and Topology, Rice University (2024, 2025)\nSession Chair & Head Sorter, APS March Meetings, American Physical Society\nSeminar Series Coordinator, Theoretical Condensed Matter Group, Rice University"
+  },
+  {
+    "objectID": "community-outreach.html#academic-service",
+    "href": "community-outreach.html#academic-service",
+    "title": "Community & Outreach",
+    "section": "Academic Service",
+    "text": "Academic Service\n\nPeer Reviewer\nNature and Physical Review group of journals.\n\n\nSession Chair\nSession chair for the session on Quantum Emulators II, eQMA workshop (October 2024); Novel and Emerging Phases of Matter, APS March Meeting (March, 2024); Strange Metals in Quantum Materials and Quantum Emulators, Physikzentrum Bad Honnef (December, 2023); Vannevar Bush Symposium on Extreme Quantum Materials, Rice University (November, 2023); Non-Fermi Liquid Theory, APS March Meeting (March, 2022)."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Shouvik Sur",
+    "section": "",
+    "text": "I am a theoretical physicist with expertise in computational many-body physics. I am interested in the mechanisms and diagnostics of emergent behaviors of complex matter.\nMy past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.\nI am currently working on many-body aspects of quantum technologies and machine learning. Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory."
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Shouvik Sur",
+    "section": "Education",
+    "text": "Education\n\nPh.D. in Physics | Perimeter Institute for Theoretical Physics & McMaster University"
+  },
+  {
+    "objectID": "index.html#highlighted-recent-work",
+    "href": "index.html#highlighted-recent-work",
+    "title": "Shouvik Sur",
+    "section": "Highlighted Recent Work",
+    "text": "Highlighted Recent Work\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteStrong-Field Response\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
+  },
+  {
+    "objectID": "research.html",
+    "href": "research.html",
+    "title": "Research",
+    "section": "",
+    "text": "I investigate properties of complex matter within the framework of statistical and condensed matter physics. I enjoy searching for avenues that translate fundamental principles into modern technological applications. Broadly, my present research interests are in quantum sensing with cavity quantum materials [can we mine the quantum resources within quantum materials by coupling them to quantum light?], machine learning [a grand manifestation of classical (and sometimes quantum) complex systems], quantum criticality [foundational organizing principle; generates some of the most unusual behaviors of matter], and topological materials [a frontier for correlation physics and non-equilibrium phenomena].\nMy work can be divided into 3 phases based on its primary focus.\nThe broad topics that I have worked on are summarized by the TOC on the right with publications details below."
+  },
+  {
+    "objectID": "research.html#selected-publications",
+    "href": "research.html#selected-publications",
+    "title": "Research",
+    "section": "Selected Publications",
+    "text": "Selected Publications\n[* Denotes equal contribution]\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)\nNonlinear thermal and thermoelectric transport from quantum geometry\nY. Fang*, S. Sur*, Y. Xie, and Q. Si\narXiv:2505.16999 (2025)\nFully nonequilibrium Hall response from Berry curvature\nS. Sur, L. Chen, Y. Wang, C. Setty, S. Paschen, and Q. Si\narXiv:2411.16675 (2024)\nEmergent flat band and topological Kondo semimetal driven by orbital-selective correlations\nL. Chen, F. Xie, S. Sur, H. Hu, S. Paschen, J. Cano, and Q. Si\nNature Communications 15, 5242 (2024)\nField induced non-BEC transition in frustrated magnets\nS. Sur, Y. Xu, S. Li, S.-S. Gong, and A. H. Nevidomskyy\nPhys. Rev. Lett. 132, 066701 (2024)\nDipolar Weyl semimetals\nA. C. Tyner and S. Sur\nPhys. Rev. B 109, L081101 (2024) [Letter]\nShot noise in a strange metal\nL. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, S. Sur, Q. Si, S. Paschen, D. Natelson\nScience 382, 907 (2023)\nUnifying Interacting Nodal Semimetals: A New Route to Strong Coupling\nS. Sur and B. Roy\nPhys. Rev. Lett. 123, 207601 (2019)\nMetallic state in bosonic systems with continuously degenerate minima\nS. Sur and K. Yang\nPhys. Rev. B 100, 024519 (2019)\nQuasilocal Strange Metal\nS. Sur and S.-S. Lee\nPhys. Rev. B 91, 125136 (2015)\nChiral non-Fermi Liquids\nS. Sur and S.-S. Lee\nPhys. Rev. B 90, 045121 (2014)"
+  },
+  {
+    "objectID": "research.html#research-topics-publications",
+    "href": "research.html#research-topics-publications",
+    "title": "Research",
+    "section": "Research Topics & Publications",
+    "text": "Research Topics & Publications\n\nQuantum Resource Engineering\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)\nQuantum Fisher information of magnetic quantum phase transition on Kondo lattice\nY. Fang, L. Chen, M. Mahankali, F. Xie, Y. Wang, S. Sur, Q. Si\narXiv:2607.16150 (2026)\n\n\n\n\nQuantum Liquids\n\n\n\n\n\n\nTipNon-Fermi Liquids\n\n\n\n\n\n\nPerturbative Kondo destruction and global phase diagram of heavy fermion metals\nY. Wang, S. Sur, C.-C. Liu, and Q. Si\narXiv:2512.25036 (2025)\nSuppression of shot noise at a Kondo destruction quantum critical point\nY. Wang, S. Sur, F. Xie, H. Hu, S. Paschen, D. Natelson, and Q. Si\narXiv:2507.00960 (2025)\nShot noise in a strange metal\nL. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, S. Sur, Q. Si, S. Paschen, D. Natelson\nScience 382, 907 (2023)\n◊ Coverage in Quanta Magazine\nMetallic quantum criticality enabled by flat bands in a kagome lattice\nL. Chen, F. Xie, S. Sur, H. Hu, S. Paschen, J. Cano, and Q. Si\narXiv:2307.09431 (2023)\nUnifying Interacting Nodal Semimetals: A New Route to Strong Coupling\nS. Sur and B. Roy\nPhys. Rev. Lett. 123, 207601 (2019)\nCoulomb interaction driven instabilities of sliding Luttinger liquids\nS. Sur and K. Yang\nPhys. Rev. B 96, 075131 (2017)\nAnisotropic non-Fermi Liquids\nS. Sur and S.-S. Lee\nPhys. Rev. B 94, 195135 (2016)\nQuasilocal Strange Metal\nS. Sur and S.-S. Lee\nPhys. Rev. B 91, 125136 (2015)\nChiral non-Fermi Liquids\nS. Sur and S.-S. Lee\nPhys. Rev. B 90, 045121 (2014)\n◊ Editors’ Suggestion\n\n\n\n\n\n\n\n\n\n\nTipBose Metals\n\n\n\n\n\n\nField induced non-BEC transition in frustrated magnets\nS. Sur, Y. Xu, S. Li, S.-S. Gong, and A. H. Nevidomskyy\nPhys. Rev. Lett. 132, 066701 (2024)\nMetallic state in bosonic systems with continuously degenerate minima\nS. Sur and K. Yang\nPhys. Rev. B 100, 024519 (2019)\n\n\n\n\n\n\n\nNon-Equilibrium Dynamics\n\n\n\n\n\n\nTipNon-Linear Topological Response\n\n\n\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\nNonlinear thermal and thermoelectric transport from quantum geometry\nY. Fang*, S. Sur*, Y. Xie, and Q. Si\narXiv:2505.16999 (2025)\nFully nonequilibrium Hall response from Berry curvature\nS. Sur, L. Chen, Y. Wang, C. Setty, S. Paschen, and Q. Si\narXiv:2411.16675 (2024)\n\n\n\n\n\n\n\n\n\n\nTipShot Noise\n\n\n\n\n\n\nSuppression of shot noise at a Kondo destruction quantum critical point\nY. Wang, S. Sur, F. Xie, H. Hu, S. Paschen, D. Natelson, and Q. Si\narXiv:2507.00960 (2025)\nShot noise as a characterization of strongly correlated metals\nY. Wang, C. Setty, S. Sur, L. Chen, S. Paschen, D. Natelson, and Q. Si\nPhys. Rev. Research 6, L042045 (2024) [Letter]\nShot noise in coupled electron-boson systems\nY. Wang, S. Sur, C. Setty, and Q. Si\narXiv:2404.14515 (2024)\nShot noise in a strange metal\nL. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, S. Sur, Q. Si, S. Paschen, D. Natelson\nScience 382, 907 (2023)\n◊ Coverage in Quanta Magazine\n\n\n\n\n\n\n\nTopological Materials\n\n\n\n\n\n\nTipGeneral Systems\n\n\n\n\n\n\nCorrelated Hopf insulators\nK. Ladovrechis and S. Sur\nPhys. Rev. B 112, 235148 (2025)\nCubic Dirac Semimetals: General Theory and Application to Rare-Earth Magnets\nS. Sur and C. Setty\nPhys. Rev. Research 7, 013280 (2025)\nDipolar Weyl semimetals\nA. C. Tyner and S. Sur\nPhys. Rev. B 109, L081101 (2024) [Letter]\nSymmetry constraints and spectral crossing in a Mott insulator with Green’s function zeros\nC. Setty*, S. Sur*, L. Chen, F. Xie, H. Hu, S. Paschen, J. Cano, Q. Si\nPhys. Rev. Research 6, L032018 (2024) [Letter]\nIn-plane Wilson loop for measurement of quantized non-Abelian Berry flux\nA. C. Tyner, S. Sur, Q. Zhou, D. Puggioni, P. Darancet, J. M. Rondinelli, and P. Goswami\nPhys. Rev. B 109, 195149 (2024)\nElectronic properties, correlated topology, and Green’s function zeros\nC. Setty, F. Xie, S. Sur, L. Chen, M. G. Vergniory, Q. Si\nPhys. Rev. Research 6, 033235 (2024)\nTopology of three-dimensional Dirac semimetals and quantum spin Hall systems without gapless edge modes\nA. C. Tyner*, S. Sur*, D. Puggioni, J. M. Rondinelli, and P. Goswami\nPhys. Rev. Research 5, L012019 (2023) [Letter]\nTopological Diagnosis of Strongly Correlated Electron Systems\nC. Setty*, F. Xie*, S. Sur*, L. Chen, M. G. Vergniory, and Q. Si\narXiv:2311.12031 (2023)\nInteraction-driven quantum anomalous Hall insulator in Dirac semimetal\nH. Lu*, S. Sur*, S.-S. Gong, and D. Sheng\nPhys. Rev. B 106, 205105 (2022)\nMixed-order topology of Benalcazar-Bernevig-Hughes models\nS. Sur*, A. C. Tyner*, and P. Goswami\narXiv:2201.07205 (2022)\nInsulator-metal quantum phase transition in heavy topological insulators\nS. Sur and P. Goswami\narXiv:2110.15353 (2021)\nUnifying Interacting Nodal Semimetals: A New Route to Strong Coupling\nS. Sur and B. Roy\nPhys. Rev. Lett. 123, 207601 (2019)\nOrigin of butterfly magnetoresistance in a Dirac nodal-line system\nY.-C. Chiu, K.-W. Chen, R. Schönemann, V. L. Quito, S. Sur, Q. Zhou, D. Graf, E. Kampert, T. Förster, K. Yang, G. T. McCandless, J. Y. Chan, R. E. Baumbach, M. D. Johannes, and L. Balicas\nPhys. Rev. B 100, 125112 (2019)\n◊ Editors’ Suggestion\nBulk Fermi surface of the Weyl type-II semimetallic candidate NbIrTe4\nR. Schönemann, Y.-C. Chiu, W. Zheng, V. L. Quito, S. Sur, G. T. McCandless, J. Y. Chan, and L. Balicas\nPhys. Rev. B 99, 195128 (2019)\nQuantum Anomalous Hall Insulator Stabilized By Competing Interactions\nS. Sur, S.-S. Gong, K. Yang, and O. Vafek\nPhys. Rev. B 98, 125114 (2018)\nInstabilities of Weyl-loop semi-metals\nS. Sur and R. Nandkishore\nNew J. Phys. 18, 115006 (2016)\n◊ Invited article for “Focus on Topological Semimetals”\n\n\n\n\n\n\n\n\n\n\nTipFlat-Band Materials\n\n\n\n\n\n\nCorrelated flat-band physics in a bilayer kagome metal based on compact molecular orbitals\nM. Mahankali, F. Xie, Y. Fang, L. Chen, S. Sur, S. Paschen, J. C. Souza, M. Haim, A. Gupta, N. Avraham, H. Beidenkopf, H. Tan, B. Yan, Q. Si\narXiv:2503.09706 (2025)\nEmergent flat band and topological Kondo semimetal driven by orbital-selective correlations\nL. Chen, F. Xie, S. Sur, H. Hu, S. Paschen, J. Cano, and Q. Si\nNature Communications 15, 5242 (2024)\nSuperconductivity in twisted WSe2 from topology-induced quantum fluctuations\nF. Xie, L. Chen, S. Sur, Y. Fang, J. Cano, and Q. Si\nPhys. Rev. Lett. 134, 136503 (2025)\nElectron correlations in the kagome flat band metal CsCr3Sb5\nF. Xie, Y. Fang, Y. Li, Y. Huang, L. Chen, C. Setty, S. Sur, B. Yakobson, R. Valentí, Q. Si\nPhys. Rev. Res. 7, L022061 (2025)\nParticle-hole asymmetric phases in doped twisted bilayer graphene\nR. Hou, S. Sur, L. K. Wagner, and A. H. Nevidomskyy\nPhys. Rev. B 111, 125140 (2025)\nMetallic quantum criticality enabled by flat bands in a kagome lattice\nL. Chen, F. Xie, S. Sur, H. Hu, S. Paschen, J. Cano, and Q. Si\narXiv:2307.09431 (2023)"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html#recent-work-on",
+    "href": "index.html#recent-work-on",
+    "title": "Shouvik Sur",
+    "section": "Recent Work On",
+    "text": "Recent Work On\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteStrong-Field Response\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
+  },
+  {
+    "objectID": "index.html#recent-works",
+    "href": "index.html#recent-works",
+    "title": "Shouvik Sur",
+    "section": "Recent Works",
+    "text": "Recent Works\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteTopological Response at Strong Fields\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
+  },
+  {
+    "objectID": "community-outreach.html#recent-invited-talks",
+    "href": "community-outreach.html#recent-invited-talks",
+    "title": "Community & Outreach",
+    "section": "",
+    "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nArtificial heavy fermions in kagome metals: Topology and quantum criticality based on compact molecular orbitals\nMax Planck Institute for the Physics of Complex Systems, Dresden, Germany (April, 2025) [unable to attend]\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nNon-Fermi liquids in flat-band systems\nNational High Magnetic Field Laboratory, Tallahassee, FL (January, 2024)"
+  },
+  {
+    "objectID": "community-outreach.html#selected-organizational-activities",
+    "href": "community-outreach.html#selected-organizational-activities",
+    "title": "Community & Outreach",
+    "section": "Selected Organizational Activities",
+    "text": "Selected Organizational Activities\n\nCo-Organizer, Spring School on Electron Correlations and Topology, Rice University (2024, 2025)\nHead Sorter, March Meeting, American Physical Society (2024)"
+  }
+]

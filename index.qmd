@@ -1,0 +1,111 @@
+---
+title: "Shouvik Sur"
+subtitle: "Theoretical Physicist"
+image: self.png
+about:
+  template: solana
+  image-shape: round
+  links:
+    - icon: envelope
+      text: Email
+      href: mailto:shouvik.sur@gmail.com
+    - icon: google
+      text: Scholar
+      href: https://scholar.google.com/citations?user=J9dsjdoAAAAJ&hl=en
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/shouvik-sur/
+    - icon: github
+      text: GitHub
+      href: https://github.com/shouvik-s
+---
+
+I am a theoretical physicist with expertise in computational many-body physics. I am interested in the mechanisms and diagnostics of emergent behaviors of complex matter.
+
+My past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.
+
+I am currently working on many-body aspects of quantum technologies and machine learning.  Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory.
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+## Selected Publications
+
+[\* Denotes equal contribution]
+
+* **Amplified response of cavity-coupled quantum critical systems**  
+  **S. Sur\***, Y. Wang\*, M. Mahankali, S. Paschen, and Q. Si  
+  [Nature Communications **17**, 4404 (2026)](https://doi.org/10.1038/s41467-026-73112-1)
+
+* **Dual-use quantum hardware for quantum resource generation and energy storage**  
+  V. Sharma\*, Y. Wang, and **S. Sur\***  
+  *arXiv:2604.21913* (2026)
+
+* **Nonlinear thermal and thermoelectric transport from quantum geometry**  
+  Y. Fang\*, **S. Sur\***, Y. Xie, and Q. Si  
+  *arXiv:2505.16999* (2025)
+
+* **Fully nonequilibrium Hall response from Berry curvature**  
+  **S. Sur**, L. Chen, Y. Wang, C. Setty, S. Paschen, and Q. Si  
+  *arXiv:2411.16675* (2024)
+
+* **Emergent flat band and topological Kondo semimetal driven by orbital-selective correlations**  
+  L. Chen, F. Xie, **S. Sur**, H. Hu, S. Paschen, J. Cano, and Q. Si  
+  *Nature Communications* **15**, 5242 (2024)
+
+* **Field induced non-BEC transition in frustrated magnets**  
+  **S. Sur**, Y. Xu, S. Li, S.-S. Gong, and A. H. Nevidomskyy  
+  *Phys. Rev. Lett.* **132**, 066701 (2024)
+
+* **Dipolar Weyl semimetals**  
+  A. C. Tyner and **S. Sur**  
+  *Phys. Rev. B* **109**, L081101 (2024) [Letter]
+
+* **Shot noise in a strange metal**  
+  L. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, **S. Sur**, Q. Si, S. Paschen, D. Natelson  
+  *Science* **382**, 907 (2023)
+
+* **Unifying Interacting Nodal Semimetals: A New Route to Strong Coupling**  
+  **S. Sur** and B. Roy  
+  *Phys. Rev. Lett.* **123**, 207601 (2019)
+
+* **Metallic state in bosonic systems with continuously degenerate minima**  
+  **S. Sur** and K. Yang  
+  *Phys. Rev. B* **100**, 024519 (2019)
+
+* **Quasilocal Strange Metal**  
+  **S. Sur** and S.-S. Lee  
+  *Phys. Rev. B* **91**, 125136 (2015)
+
+* **Chiral non-Fermi Liquids**  
+  **S. Sur** and S.-S. Lee  
+  *Phys. Rev. B* **90**, 045121 (2014)
+
+:::
+
+## Education
+
+- **Ph.D. in Physics** | Perimeter Institute for Theoretical Physics & McMaster University
+
+## Recent Works
+
+::: {.callout-note appearance="minimal"}
+### Cavity Quantum Materials
+**Amplified response of cavity-coupled quantum critical systems**  
+*__S. Sur__\*, Y. Wang\*, M. Mahankali, S. Paschen, and Q. Si*  
+[Nature Communications 17, 4404 (2026)](https://doi.org/10.1038/s41467-026-73112-1)
+:::
+
+::: {.callout-note appearance="minimal"}
+### Topological Response at Strong Fields
+**Nonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States**  
+*L. Geng, M. Eckstein, L. Chen, __S. Sur__, S. Paschen, Q. Si, P. Werner*  
+[arXiv:2607.01519 (2026)](https://arxiv.org/abs/2607.01519)
+:::
+
+::: {.callout-note appearance="minimal"}
+### Quantum Hardware
+**Dual-use quantum hardware for quantum resource generation and energy storage**  
+*V. Sharma\*, Y. Wang, and __S. Sur__\**  
+[arXiv:2604.21913 (2026)](https://arxiv.org/abs/2604.21913)
+:::
+
+

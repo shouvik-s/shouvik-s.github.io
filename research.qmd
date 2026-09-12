@@ -1,0 +1,232 @@
+---
+title: "Research"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+I investigate properties of complex matter within the framework of statistical and condensed matter physics. I enjoy searching for avenues that translate fundamental principles into modern technological applications. Broadly, my present research interests are in **quantum sensing with cavity quantum materials** [_can we mine the quantum resources within quantum materials by coupling them to quantum light?_], **machine learning** [_a grand manifestation of classical (and sometimes quantum) complex systems_], **quantum criticality** [_foundational organizing principle; generates  some of the most unusual behaviors of matter_], and **topological materials** [_a frontier for correlation physics and non-equilibrium phenomena_].
+
+My work can be divided into 3 phases based on its primary focus.
+
+* **Phase I:** I started my research career devising variational algorithms based on the projected entangled paired states (PEPS; a type of tensor network states above one dimension) as part of my master thesis. My doctoral work established several milestones in theoretical modeling of non-Fermi liquid states, including the only exactly solved scaling theory of a two dimensional non-Fermi liquid without randomness. Over the next three years I studied other forms of anomalous quantum liquids, especially in spin (i.e. magnetic) and pure bosonic systems. Alongside, I also developed renormalization group schemes for semi-metals and investigated metals with highly constrained electronic dynamics.
+
+* **Phase II:** Inspired by the developments in topological band theory and its implications for many-body physics, in the next phase I focused on actual quantum materials. The motivation was to determine how the theoretical frameworks developed in Phase I inform ongoing experiments. During this time I worked on developing first-principles-friendly diagnostics of topological structures that remain hidden within Kramer's degenerate subspaces, and connecting lattice symmetries with constraints they place on electronic motion and strong correlation phenomena. The resultant works dominate the publication category below titled [Topological Materials](#topological-materials). In parallel, I was drawn to the many facets of non-equilibrium phenomena in topological and strongly correlated systems. This led to a breakthrough in the field of strange metals where we successfully demonstrated how the current shot-noise can serve as a probe of strong correlations. 
+
+* **Phase III:** In the latest phase, I aim to push the insights gained during phases I & II towards the frontier of technology. My work has two branches. On the first branch sits the question: how can we utilize the enormous quantum resources that are intrinsic to quantum materials to build new types of quantum machines, such as sensors and batteries. My works in this direction are listed below under [Quantum Resource Engineering](#quantum-resource-engineering). Concurrently, I have become interested in a complex systems perspective of the principles and mechanisms underlying machine learning. I apply tools from statistical physics and dynamical systems to develop controlled minimal models that can be thoroughly understood in the spirit of the models of complex systems in physics.
+
+The broad topics that I have worked on are summarized by the TOC on the right with publications details below. 
+
+---
+
+## Research Topics & Publications
+
+### Quantum Resource Engineering
+
+* **Amplified response of cavity-coupled quantum critical systems**  
+  **S. Sur\***, Y. Wang\*, M. Mahankali, S. Paschen, and Q. Si  
+  [Nature Communications **17**, 4404 (2026)](https://doi.org/10.1038/s41467-026-73112-1)
+
+* **Dual-use quantum hardware for quantum resource generation and energy storage**  
+  V. Sharma\*, Y. Wang, and **S. Sur\***  
+  [arXiv:2604.21913 (2026)](https://doi.org/10.48550/arXiv.2604.21913)
+
+* **Quantum Fisher information of magnetic quantum phase transition on Kondo lattice**  
+  Y. Fang, L. Chen, M. Mahankali, F. Xie, Y. Wang, **S. Sur**, Q. Si  
+  [arXiv:2607.16150 (2026)](https://doi.org/10.48550/arXiv.2607.16150)
+
+---
+
+### Quantum Liquids
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+#### Non-Fermi Liquids
+* **Perturbative Kondo destruction and global phase diagram of heavy fermion metals**  
+  Y. Wang, **S. Sur**, C.-C. Liu, and Q. Si  
+  *arXiv:2512.25036* (2025)
+
+* **Suppression of shot noise at a Kondo destruction quantum critical point**  
+  Y. Wang, **S. Sur**, F. Xie, H. Hu, S. Paschen, D. Natelson, and Q. Si  
+  *arXiv:2507.00960* (2025)
+
+* **Shot noise in a strange metal**  
+  L. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, **S. Sur**, Q. Si, S. Paschen, D. Natelson  
+  *Science* **382**, 907 (2023)  
+  *◊ Coverage in Quanta Magazine*
+
+* **Metallic quantum criticality enabled by flat bands in a kagome lattice**  
+  L. Chen, F. Xie, **S. Sur**, H. Hu, S. Paschen, J. Cano, and Q. Si  
+  *arXiv:2307.09431* (2023)
+
+* **Unifying Interacting Nodal Semimetals: A New Route to Strong Coupling**  
+  **S. Sur** and B. Roy  
+  *Phys. Rev. Lett.* **123**, 207601 (2019)
+
+* **Coulomb interaction driven instabilities of sliding Luttinger liquids**  
+  **S. Sur** and K. Yang  
+  *Phys. Rev. B* **96**, 075131 (2017)
+
+* **Anisotropic non-Fermi Liquids**  
+  **S. Sur** and S.-S. Lee  
+  *Phys. Rev. B* **94**, 195135 (2016)
+
+* **Quasilocal Strange Metal**  
+  **S. Sur** and S.-S. Lee  
+  *Phys. Rev. B* **91**, 125136 (2015)
+
+* **Chiral non-Fermi Liquids**  
+  **S. Sur** and S.-S. Lee  
+  *Phys. Rev. B* **90**, 045121 (2014)  
+  *◊ Editors' Suggestion*
+:::
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+#### Bose Metals
+* **Field induced non-BEC transition in frustrated magnets**  
+  **S. Sur**, Y. Xu, S. Li, S.-S. Gong, and A. H. Nevidomskyy  
+  *Phys. Rev. Lett.* **132**, 066701 (2024)
+
+* **Metallic state in bosonic systems with continuously degenerate minima**  
+  **S. Sur** and K. Yang  
+  *Phys. Rev. B* **100**, 024519 (2019)
+:::
+---
+
+### Non-Equilibrium Dynamics
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+### Non-Linear Topological Response
+* **Nonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States**  
+  L. Geng, M. Eckstein, L. Chen, **S. Sur**, S. Paschen, Q. Si, P. Werner  
+  [arXiv:2607.01519 (2026)](https://arxiv.org/abs/2607.01519)
+
+* **Nonlinear thermal and thermoelectric transport from quantum geometry**  
+  Y. Fang\*, **S. Sur\***, Y. Xie, and Q. Si  
+  *arXiv:2505.16999* (2025)
+
+* **Fully nonequilibrium Hall response from Berry curvature**  
+  **S. Sur**, L. Chen, Y. Wang, C. Setty, S. Paschen, and Q. Si  
+  *arXiv:2411.16675* (2024)
+:::
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+### Shot Noise
+
+* **Suppression of shot noise at a Kondo destruction quantum critical point**  
+  Y. Wang, **S. Sur**, F. Xie, H. Hu, S. Paschen, D. Natelson, and Q. Si  
+  *arXiv:2507.00960* (2025)
+
+* **Shot noise as a characterization of strongly correlated metals**  
+  Y. Wang, C. Setty, **S. Sur**, L. Chen, S. Paschen, D. Natelson, and Q. Si  
+  *Phys. Rev. Research* **6**, L042045 (2024) [Letter]
+
+* **Shot noise in coupled electron-boson systems**  
+  Y. Wang, **S. Sur**, C. Setty, and Q. Si  
+  *arXiv:2404.14515* (2024)
+
+* **Shot noise in a strange metal**  
+  L. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, **S. Sur**, Q. Si, S. Paschen, D. Natelson  
+  *Science* **382**, 907 (2023)  
+  *◊ Coverage in Quanta Magazine*
+:::
+
+---
+
+### Topological Materials
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+#### General Systems
+* **Correlated Hopf insulators**  
+  K. Ladovrechis and **S. Sur**  
+  *Phys. Rev. B* **112**, 235148 (2025)
+
+* **Cubic Dirac Semimetals: General Theory and Application to Rare-Earth Magnets**  
+  **S. Sur** and C. Setty  
+  *Phys. Rev. Research* **7**, 013280 (2025)
+
+* **Dipolar Weyl semimetals**  
+  A. C. Tyner and **S. Sur**  
+  *Phys. Rev. B* **109**, L081101 (2024) [Letter]
+
+* **Symmetry constraints and spectral crossing in a Mott insulator with Green's function zeros**  
+  C. Setty\*, **S. Sur\***, L. Chen, F. Xie, H. Hu, S. Paschen, J. Cano, Q. Si  
+  *Phys. Rev. Research* **6**, L032018 (2024) [Letter]
+
+* **In-plane Wilson loop for measurement of quantized non-Abelian Berry flux**  
+  A. C. Tyner, **S. Sur**, Q. Zhou, D. Puggioni, P. Darancet, J. M. Rondinelli, and P. Goswami  
+  *Phys. Rev. B* **109**, 195149 (2024)
+
+* **Electronic properties, correlated topology, and Green's function zeros**  
+  C. Setty, F. Xie, **S. Sur**, L. Chen, M. G. Vergniory, Q. Si  
+  *Phys. Rev. Research* **6**, 033235 (2024)
+
+* **Topology of three-dimensional Dirac semimetals and quantum spin Hall systems without gapless edge modes**  
+  A. C. Tyner\*, **S. Sur\***, D. Puggioni, J. M. Rondinelli, and P. Goswami  
+  *Phys. Rev. Research* **5**, L012019 (2023) [Letter]
+
+* **Topological Diagnosis of Strongly Correlated Electron Systems**  
+  C. Setty\*, F. Xie\*, **S. Sur\***, L. Chen, M. G. Vergniory, and Q. Si  
+  *arXiv:2311.12031* (2023)
+
+* **Interaction-driven quantum anomalous Hall insulator in Dirac semimetal**  
+  H. Lu\*, **S. Sur\***, S.-S. Gong, and D. Sheng  
+  *Phys. Rev. B* **106**, 205105 (2022)
+
+* **Mixed-order topology of Benalcazar-Bernevig-Hughes models**  
+  **S. Sur\***, A. C. Tyner\*, and P. Goswami  
+  *arXiv:2201.07205* (2022)
+
+* **Insulator-metal quantum phase transition in heavy topological insulators**  
+  **S. Sur** and P. Goswami  
+  *arXiv:2110.15353* (2021)
+
+* **Unifying Interacting Nodal Semimetals: A New Route to Strong Coupling**  
+  **S. Sur** and B. Roy  
+  *Phys. Rev. Lett.* **123**, 207601 (2019)
+
+* **Origin of butterfly magnetoresistance in a Dirac nodal-line system**  
+  Y.-C. Chiu, K.-W. Chen, R. Schönemann, V. L. Quito, **S. Sur**, Q. Zhou, D. Graf, E. Kampert, T. Förster, K. Yang, G. T. McCandless, J. Y. Chan, R. E. Baumbach, M. D. Johannes, and L. Balicas  
+  *Phys. Rev. B* **100**, 125112 (2019)  
+  *◊ Editors' Suggestion*
+
+* **Bulk Fermi surface of the Weyl type-II semimetallic candidate NbIrTe4**  
+  R. Schönemann, Y.-C. Chiu, W. Zheng, V. L. Quito, **S. Sur**, G. T. McCandless, J. Y. Chan, and L. Balicas  
+  *Phys. Rev. B* **99**, 195128 (2019)
+
+* **Quantum Anomalous Hall Insulator Stabilized By Competing Interactions**  
+  **S. Sur**, S.-S. Gong, K. Yang, and O. Vafek  
+  *Phys. Rev. B* **98**, 125114 (2018)
+
+* **Instabilities of Weyl-loop semi-metals**  
+  **S. Sur** and R. Nandkishore  
+  *New J. Phys.* **18**, 115006 (2016)  
+  *◊ Invited article for "Focus on Topological Semimetals"*
+:::
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+#### Flat-Band Materials
+* **Correlated flat-band physics in a bilayer kagome metal based on compact molecular orbitals**  
+  M. Mahankali, F. Xie, Y. Fang, L. Chen, **S. Sur**, S. Paschen, J. C. Souza, M. Haim, A. Gupta, N. Avraham, H. Beidenkopf, H. Tan, B. Yan, Q. Si  
+  *arXiv:2503.09706* (2025)
+
+* **Emergent flat band and topological Kondo semimetal driven by orbital-selective correlations**  
+  L. Chen, F. Xie, **S. Sur**, H. Hu, S. Paschen, J. Cano, and Q. Si  
+  *Nature Communications* **15**, 5242 (2024)
+
+* **Superconductivity in twisted WSe2 from topology-induced quantum fluctuations**  
+  F. Xie, L. Chen, **S. Sur**, Y. Fang, J. Cano, and Q. Si  
+  *Phys. Rev. Lett.* **134**, 136503 (2025)
+
+* **Electron correlations in the kagome flat band metal CsCr3Sb5**  
+  F. Xie, Y. Fang, Y. Li, Y. Huang, L. Chen, C. Setty, **S. Sur**, B. Yakobson, R. Valentí, Q. Si  
+  *Phys. Rev. Res.* **7**, L022061 (2025)
+
+* **Particle-hole asymmetric phases in doped twisted bilayer graphene**  
+  R. Hou, **S. Sur**, L. K. Wagner, and A. H. Nevidomskyy  
+  *Phys. Rev. B* **111**, 125140 (2025)
+
+* **Metallic quantum criticality enabled by flat bands in a kagome lattice**  
+  L. Chen, F. Xie, **S. Sur**, H. Hu, S. Paschen, J. Cano, and Q. Si  
+  *arXiv:2307.09431* (2023)
+:::

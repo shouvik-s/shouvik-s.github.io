@@ -1,0 +1,44 @@
+---
+title: "Community & Outreach"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## Recent Invited Talks
+
+* **Amplified response of cavity-coupled quantum critical systems**  
+  *P & A Condensed Matter Seminar, Rice University*, Houston, TX (November, 2025)
+
+* **Artificial heavy fermions in kagome metals: Topology and quantum criticality based on compact molecular orbitals**  
+  *Max Planck Institute for the Physics of Complex Systems*, Dresden, Germany (April, 2025) [unable to attend]
+
+* **Metallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems**  
+  *American Physical Society March Meeting*, Anaheim, CA (March, 2025)
+
+* **Non-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros**  
+  *Kavli Institute for Theoretical Physics (KITP)*, Santa Barbara, CA (April, 2024)
+
+* **Non-Fermi liquids in flat-band systems**  
+  *National High Magnetic Field Laboratory*, Tallahassee, FL (January, 2024)
+
+
+---
+
+
+## Selected Organizational Activities
+
+* **Co-Organizer**, *Spring School on Electron Correlations and Topology*, Rice University (2024, 2025)
+* **Head Sorter**, *March Meeting*, American Physical Society (2024)
+
+
+---
+
+## Academic Service
+
+### Peer Reviewer
+*Nature* and *Physical Review* group of journals.
+
+### Session Chair
+Session chair for the session on *Quantum Emulators II*, eQMA workshop (October 2024); *Novel and Emerging Phases of Matter*, APS March Meeting (March, 2024); *Strange Metals in Quantum Materials and Quantum Emulators*, Physikzentrum Bad Honnef (December, 2023); *Vannevar Bush Symposium on Extreme Quantum Materials*, Rice University (November, 2023);  *Non-Fermi Liquid Theory*, APS March Meeting (March, 2022).
