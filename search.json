@@ -25,14 +25,14 @@
     "href": "community-outreach.html#academic-service",
     "title": "Community & Outreach",
     "section": "Academic Service",
-    "text": "Academic Service\n\nPeer Reviewer\nNature and Physical Review group of journals.\n\n\nSession Chair\nSession chair for the session on Quantum Emulators II, eQMA workshop (October 2024); Novel and Emerging Phases of Matter, APS March Meeting (March, 2024); Strange Metals in Quantum Materials and Quantum Emulators, Physikzentrum Bad Honnef (December, 2023); Vannevar Bush Symposium on Extreme Quantum Materials, Rice University (November, 2023); Non-Fermi Liquid Theory, APS March Meeting (March, 2022)."
+    "text": "Academic Service\n\nPeer Reviewer for Nature and Physical Review group of journals."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Shouvik Sur",
     "section": "",
-    "text": "I am a theoretical physicist with expertise in computational many-body physics. I am interested in the mechanisms and diagnostics of emergent behaviors of complex matter.\nMy past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.\nI am currently working on many-body aspects of quantum technologies and machine learning. Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory."
+    "text": "I am a theoretical physicist with expertise in computational many-body physics. I am interested in the mechanisms and diagnostics of emergent behaviors of complex matter.\nMy past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.\nI am currently working on many-body aspects of quantum technologies and machine learning. Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, (i) I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory; (ii) I develop computational methods, based on machine learning algorithms, to access new regimes of strongly correlated systems and quantum transport in numerical experiments."
   },
   {
     "objectID": "index.html#education",
