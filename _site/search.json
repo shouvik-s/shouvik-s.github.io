@@ -7,39 +7,32 @@
     "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nArtificial heavy fermions in kagome metals: Topology and quantum criticality based on compact molecular orbitals\nMax Planck Institute for the Physics of Complex Systems, Dresden, Germany (April, 2025) [unable to attend]\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nNon-Fermi liquids in flat-band systems\nNational High Magnetic Field Laboratory, Tallahassee, FL (January, 2024)"
   },
   {
-    "objectID": "community-outreach.html#recent-talks",
-    "href": "community-outreach.html#recent-talks",
+    "objectID": "community-outreach.html#recent-invited-talks",
+    "href": "community-outreach.html#recent-invited-talks",
     "title": "Community & Outreach",
     "section": "",
-    "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nQuantum criticality in cavity quantum materials\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (2023)\nQuantum critical fluids and non-Fermi liquid dynamics\nMax Planck Institute for the Physics of Complex Systems (MPI-PKS), Dresden, Germany (2023)"
+    "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nArtificial heavy fermions in kagome metals: Topology and quantum criticality based on compact molecular orbitals\nMax Planck Institute for the Physics of Complex Systems, Dresden, Germany (April, 2025) [unable to attend]\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nNon-Fermi liquids in flat-band systems\nNational High Magnetic Field Laboratory, Tallahassee, FL (January, 2024)"
   },
   {
-    "objectID": "community-outreach.html#teaching",
-    "href": "community-outreach.html#teaching",
+    "objectID": "community-outreach.html#selected-organizational-activities",
+    "href": "community-outreach.html#selected-organizational-activities",
     "title": "Community & Outreach",
-    "section": "Teaching",
-    "text": "Teaching\n\nCourse Instruction & Teaching Assistance\n\nIntroduction to Solid State Physics I [Graduate course] Guest Lecturer | Rice University | Fall 2025\nIntroduction to Solid State Physics I [Graduate course] Guest Lecturer | Rice University | Fall 2024\nThermodynamics and Statistical Mechanics [Undergraduate course] Substitute Lecturer | McMaster University | Fall 2012"
-  },
-  {
-    "objectID": "community-outreach.html#organizational-activities",
-    "href": "community-outreach.html#organizational-activities",
-    "title": "Community & Outreach",
-    "section": "Organizational Activities",
-    "text": "Organizational Activities\n\nCo-Organizer, Spring School on Electron Correlations and Topology, Rice University (2024, 2025)\nSession Chair & Head Sorter, APS March Meetings, American Physical Society\nSeminar Series Coordinator, Theoretical Condensed Matter Group, Rice University"
+    "section": "Selected Organizational Activities",
+    "text": "Selected Organizational Activities\n\nCo-Organizer, Spring School on Electron Correlations and Topology, Rice University (2024, 2025)\nHead Sorter, March Meeting, American Physical Society (2024)"
   },
   {
     "objectID": "community-outreach.html#academic-service",
     "href": "community-outreach.html#academic-service",
     "title": "Community & Outreach",
     "section": "Academic Service",
-    "text": "Academic Service\n\nPeer Reviewer\nNature and Physical Review group of journals.\n\n\nSession Chair\nSession chair for the session on Quantum Emulators II, eQMA workshop (October 2024); Novel and Emerging Phases of Matter, APS March Meeting (March, 2024); Strange Metals in Quantum Materials and Quantum Emulators, Physikzentrum Bad Honnef (December, 2023); Vannevar Bush Symposium on Extreme Quantum Materials, Rice University (November, 2023); Non-Fermi Liquid Theory, APS March Meeting (March, 2022)."
+    "text": "Academic Service\n\nPeer Reviewer for Nature and Physical Review group of journals."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Shouvik Sur",
     "section": "",
-    "text": "I am a theoretical physicist with expertise in computational many-body physics. I am interested in the mechanisms and diagnostics of emergent behaviors of complex matter.\nMy past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.\nI am currently working on many-body aspects of quantum technologies and machine learning. Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory."
+    "text": "I am a theoretical physicist with expertise in computational many-body physics. I am interested in the mechanisms and diagnostics of emergent behaviors of complex matter.\nMy past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.\nI am currently working on many-body aspects of quantum technologies and machine learning. Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, (i) I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory; (ii) I develop computational methods, based on machine learning algorithms, to access new regimes of strongly correlated systems and quantum transport in numerical experiments."
   },
   {
     "objectID": "index.html#education",
@@ -49,11 +42,11 @@
     "text": "Education\n\nPh.D. in Physics | Perimeter Institute for Theoretical Physics & McMaster University"
   },
   {
-    "objectID": "index.html#highlighted-recent-work",
-    "href": "index.html#highlighted-recent-work",
+    "objectID": "index.html#recent-works",
+    "href": "index.html#recent-works",
     "title": "Shouvik Sur",
-    "section": "Highlighted Recent Work",
-    "text": "Highlighted Recent Work\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteStrong-Field Response\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
+    "section": "Recent Works",
+    "text": "Recent Works\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteTopological Response at Strong Fields\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
   },
   {
     "objectID": "research.html",
@@ -61,13 +54,6 @@
     "title": "Research",
     "section": "",
     "text": "I investigate properties of complex matter within the framework of statistical and condensed matter physics. I enjoy searching for avenues that translate fundamental principles into modern technological applications. Broadly, my present research interests are in quantum sensing with cavity quantum materials [can we mine the quantum resources within quantum materials by coupling them to quantum light?], machine learning [a grand manifestation of classical (and sometimes quantum) complex systems], quantum criticality [foundational organizing principle; generates some of the most unusual behaviors of matter], and topological materials [a frontier for correlation physics and non-equilibrium phenomena].\nMy work can be divided into 3 phases based on its primary focus.\nThe broad topics that I have worked on are summarized by the TOC on the right with publications details below."
-  },
-  {
-    "objectID": "research.html#selected-publications",
-    "href": "research.html#selected-publications",
-    "title": "Research",
-    "section": "Selected Publications",
-    "text": "Selected Publications\n[* Denotes equal contribution]\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)\nNonlinear thermal and thermoelectric transport from quantum geometry\nY. Fang*, S. Sur*, Y. Xie, and Q. Si\narXiv:2505.16999 (2025)\nFully nonequilibrium Hall response from Berry curvature\nS. Sur, L. Chen, Y. Wang, C. Setty, S. Paschen, and Q. Si\narXiv:2411.16675 (2024)\nEmergent flat band and topological Kondo semimetal driven by orbital-selective correlations\nL. Chen, F. Xie, S. Sur, H. Hu, S. Paschen, J. Cano, and Q. Si\nNature Communications 15, 5242 (2024)\nField induced non-BEC transition in frustrated magnets\nS. Sur, Y. Xu, S. Li, S.-S. Gong, and A. H. Nevidomskyy\nPhys. Rev. Lett. 132, 066701 (2024)\nDipolar Weyl semimetals\nA. C. Tyner and S. Sur\nPhys. Rev. B 109, L081101 (2024) [Letter]\nShot noise in a strange metal\nL. Chen, D. T. Lowder, E. Bakali, A. M. Andrews, W. Schrenk, M. Waas, R. Svagera, G. Eguchi, L. Prochaska, Y. Wang, C. Setty, S. Sur, Q. Si, S. Paschen, D. Natelson\nScience 382, 907 (2023)\nUnifying Interacting Nodal Semimetals: A New Route to Strong Coupling\nS. Sur and B. Roy\nPhys. Rev. Lett. 123, 207601 (2019)\nMetallic state in bosonic systems with continuously degenerate minima\nS. Sur and K. Yang\nPhys. Rev. B 100, 024519 (2019)\nQuasilocal Strange Metal\nS. Sur and S.-S. Lee\nPhys. Rev. B 91, 125136 (2015)\nChiral non-Fermi Liquids\nS. Sur and S.-S. Lee\nPhys. Rev. B 90, 045121 (2014)"
   },
   {
     "objectID": "research.html#research-topics-publications",
@@ -82,33 +68,5 @@
     "title": "About",
     "section": "",
     "text": "About this site"
-  },
-  {
-    "objectID": "index.html#recent-work-on",
-    "href": "index.html#recent-work-on",
-    "title": "Shouvik Sur",
-    "section": "Recent Work On",
-    "text": "Recent Work On\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteStrong-Field Response\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
-  },
-  {
-    "objectID": "index.html#recent-works",
-    "href": "index.html#recent-works",
-    "title": "Shouvik Sur",
-    "section": "Recent Works",
-    "text": "Recent Works\n\n\n\n\n\n\nNoteCavity Quantum Materials\n\n\n\nAmplified response of cavity-coupled quantum critical systems\nS. Sur*, Y. Wang*, M. Mahankali, S. Paschen, and Q. Si\nNature Communications 17, 4404 (2026)\n\n\n\n\n\n\n\n\nNoteTopological Response at Strong Fields\n\n\n\nNonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States\nL. Geng, M. Eckstein, L. Chen, S. Sur, S. Paschen, Q. Si, P. Werner\narXiv:2607.01519 (2026)\n\n\n\n\n\n\n\n\nNoteQuantum Hardware\n\n\n\nDual-use quantum hardware for quantum resource generation and energy storage\nV. Sharma*, Y. Wang, and S. Sur*\narXiv:2604.21913 (2026)"
-  },
-  {
-    "objectID": "community-outreach.html#recent-invited-talks",
-    "href": "community-outreach.html#recent-invited-talks",
-    "title": "Community & Outreach",
-    "section": "",
-    "text": "Amplified response of cavity-coupled quantum critical systems\nP & A Condensed Matter Seminar, Rice University, Houston, TX (November, 2025)\nArtificial heavy fermions in kagome metals: Topology and quantum criticality based on compact molecular orbitals\nMax Planck Institute for the Physics of Complex Systems, Dresden, Germany (April, 2025) [unable to attend]\nMetallic quantum criticality enabled by compact molecular orbitals in frustrated-lattice systems\nAmerican Physical Society March Meeting, Anaheim, CA (March, 2025)\nNon-Fermi liquids, non Fermi-liquids, and topology: from flat bands to Greens function zeros\nKavli Institute for Theoretical Physics (KITP), Santa Barbara, CA (April, 2024)\nNon-Fermi liquids in flat-band systems\nNational High Magnetic Field Laboratory, Tallahassee, FL (January, 2024)"
-  },
-  {
-    "objectID": "community-outreach.html#selected-organizational-activities",
-    "href": "community-outreach.html#selected-organizational-activities",
-    "title": "Community & Outreach",
-    "section": "Selected Organizational Activities",
-    "text": "Selected Organizational Activities\n\nCo-Organizer, Spring School on Electron Correlations and Topology, Rice University (2024, 2025)\nHead Sorter, March Meeting, American Physical Society (2024)"
   }
 ]

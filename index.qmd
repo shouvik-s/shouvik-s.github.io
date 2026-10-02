@@ -24,7 +24,7 @@ I am a theoretical physicist with expertise in computational many-body physics. 
 
 My past research has focused on quantum states that arise from the competition between mutually frustrating interactions, and, consequently, often defy conventional frameworks for classifying quantum matter.
 
-I am currently working on many-body aspects of quantum technologies and machine learning.  Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory.
+I am currently working on many-body aspects of quantum technologies and machine learning.  Along the first direction, I am primarily interested in developing new kinds of quantum sensors on cavity quantum materials platforms that can harness the high quantum resources intrinsic to quantum materials. Along the second direction, (i) I study ML algorithms and architectures using the methods of statistical physics and dynamical systems to develop a controlled understanding of training dynamics and memory; (ii) I develop computational methods, based on machine learning algorithms, to access new regimes of strongly correlated systems and quantum transport in numerical experiments.
 
 ::: {.callout-tip collapse="true" appearance="minimal"}
 ## Selected Publications

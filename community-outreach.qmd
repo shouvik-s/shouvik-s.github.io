@@ -37,8 +37,4 @@ format:
 
 ## Academic Service
 
-### Peer Reviewer
-*Nature* and *Physical Review* group of journals.
-
-### Session Chair
-Session chair for the session on *Quantum Emulators II*, eQMA workshop (October 2024); *Novel and Emerging Phases of Matter*, APS March Meeting (March, 2024); *Strange Metals in Quantum Materials and Quantum Emulators*, Physikzentrum Bad Honnef (December, 2023); *Vannevar Bush Symposium on Extreme Quantum Materials*, Rice University (November, 2023);  *Non-Fermi Liquid Theory*, APS March Meeting (March, 2022).
+* **Peer Reviewer** for *Nature* and *Physical Review* group of journals.
