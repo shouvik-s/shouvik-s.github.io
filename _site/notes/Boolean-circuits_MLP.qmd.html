@@ -507,13 +507,13 @@ x_1 \oplus x_2 = \overline{y_1 \land y_2}
 \tag{3}\]</span></span> where <span class="math inline">\(y_n = \overline{\overline{x_1 \land x_2} \land x_n}\)</span>. The maximum order of nesting of the Boolean operations in the expression of <span class="math inline">\(x_1 \oplus x_2\)</span> corresponds to the number of layers. Naively, since each <code>NAND</code> gate correspond to an LTF and each LTF corresponds to a layer of an MLP, it would appear that one needs a three-layered MLP to represent <code>XOR</code>.</p>
 <p>The redundancy is eliminated by noticing that <span class="math inline">\(y_n\)</span> is, in fact, representable by a single LTF, not a nested LTF. To see this, we simplify <span class="math inline">\(y_n\)</span> as</p>
 <p><span id="eq-yn"><span class="math display">\[
-\begin{align}
+\begin{aligned}
 y_n &amp;= \overline{\overline{x_1 \land x_2} \land x_n} \\
 &amp;= \overline{(\bar{x}_1 \land x_n) \land (\bar{x}_2 \land x_n)} \\
 &amp;= \overline{(\bar{x}_2 \land x_1)} ~\delta_{n,1} + \overline{(\bar{x}_1 \land x_2)} ~\delta_{n,2} \\
 &amp;= ({x}_2 \lor \bar{x}_1) ~\delta_{n,1} + ({x}_1 \lor \bar{x}_2) ~\delta_{n,2} \\
 &amp;= f({x}_2 - {x}_1 + 1/2) ~\delta_{n,1} + f({x}_1 - {x}_2 + 1/2) ~\delta_{n,2}.
-\end{align}
+\end{aligned}
 \tag{4}\]</span></span> Therefore, applying the reduction in <a href="#eq-yn" class="quarto-xref">Equation&nbsp;4</a> to <a href="#eq-xor" class="quarto-xref">Equation&nbsp;3</a> we find that <code>XOR</code> indeed requires a single nesting of LTFs and the circuit depth matches that obtained with the MLP representation of <code>XOR</code>.</p>
 </section>
 </section>

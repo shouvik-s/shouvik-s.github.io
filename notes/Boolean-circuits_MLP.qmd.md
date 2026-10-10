@@ -188,13 +188,13 @@ Naively, since each `NAND` gate correspond to an LTF and each LTF corresponds to
 The redundancy is eliminated by noticing that $y_n$ is, in fact, representable by a single LTF, not a nested LTF. To see this, we simplify $y_n$ as 
 
 $$
-\begin{align}
+\begin{aligned}
 y_n &= \overline{\overline{x_1 \land x_2} \land x_n} \\ 
 &= \overline{(\bar{x}_1 \land x_n) \land (\bar{x}_2 \land x_n)} \\
 &= \overline{(\bar{x}_2 \land x_1)} ~\delta_{n,1} + \overline{(\bar{x}_1 \land x_2)} ~\delta_{n,2} \\
 &= ({x}_2 \lor \bar{x}_1) ~\delta_{n,1} + ({x}_1 \lor \bar{x}_2) ~\delta_{n,2} \\
 &= f({x}_2 - {x}_1 + 1/2) ~\delta_{n,1} + f({x}_1 - {x}_2 + 1/2) ~\delta_{n,2}.
-\end{align}
+\end{aligned}
 $$ {#eq-yn}
 Therefore, applying the reduction in @eq-yn to @eq-xor we find that `XOR` indeed requires a single nesting of LTFs and the circuit depth matches that obtained with the MLP representation of `XOR`.
 
