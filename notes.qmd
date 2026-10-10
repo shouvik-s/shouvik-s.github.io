@@ -1,0 +1,10 @@
+---
+title: "Notes on Ongoing Work"
+listing:
+  contents: notes   # This is the command that accesses the "notes/" folder
+  type: default     # Displays the notes as a standard blog-style list
+  sort: "date desc" # Orders them from newest to oldest
+  categories: true  # Allows addition and filtering by tags later
+---
+
+Welcome to the notes section. Click on any note below to view it as a webpage or download it as a PDF.

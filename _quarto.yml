@@ -10,6 +10,8 @@ website:
         text: Home
       - href: research.qmd
         text: Research
+      - href: notes.qmd
+        text: Ongoing Work
       - href: community-outreach.qmd
         text: Community & Outreach
 

@@ -1,14 +1,25 @@
 {
+  "research.qmd": {
+    "research.html": "4f7e44df"
+  },
   "index.qmd": {
-    "index.html": "fd94661b"
+    "index.html": "c7a617a4"
   },
   "about.qmd": {
-    "about.html": "bacdb81c"
-  },
-  "research.qmd": {
-    "research.html": "e624872f"
+    "about.html": "f39b263e"
   },
   "community-outreach.qmd": {
-    "community-outreach.html": "30b46d1a"
+    "community-outreach.html": "88b95976"
+  },
+  "notes.qmd": {
+    "notes.html": "d77d4714"
+  },
+  "notes/test.qmd.md": {
+    "test.qmd.html": "e11024b5",
+    "test.qmd.tex": "b8584254"
+  },
+  "notes/Boolean-circuits_MLP.qmd.md": {
+    "Boolean-circuits_MLP.qmd.html": "deaf735a",
+    "Boolean-circuits_MLP.qmd.tex": "d0e4a186"
   }
 }
