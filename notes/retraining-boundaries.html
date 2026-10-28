@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Shouvik Sur">
+<meta name="dcterms.date" content="2026-10-28">
+<meta name="description" content="We track the epochal evolution of the decision boundaries of a 3-3-1 MLP, pre-trained for one task, as it learns a new task.">
+
+<title>Retraining a small neural network: reorienting and building decision boundaries – Shouvik Sur</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Shouvik Sur</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../community-outreach.html"> 
+<span class="menu-text">Community &amp; Outreach</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#inputs-and-targets" id="toc-inputs-and-targets" class="nav-link" data-scroll-target="#inputs-and-targets">Inputs and targets</a></li>
+  <li><a href="#the-network" id="toc-the-network" class="nav-link" data-scroll-target="#the-network">The network</a></li>
+  <li><a href="#hidden-units-are-planes" id="toc-hidden-units-are-planes" class="nav-link" data-scroll-target="#hidden-units-are-planes">Hidden units are planes</a></li>
+  <li><a href="#training-with-a-smooth-step" id="toc-training-with-a-smooth-step" class="nav-link" data-scroll-target="#training-with-a-smooth-step">Training with a smooth step</a></li>
+  <li><a href="#what-rest-of-this-note-shows" id="toc-what-rest-of-this-note-shows" class="nav-link" data-scroll-target="#what-rest-of-this-note-shows">What rest of this note shows</a></li>
+  </ul></li>
+  <li><a href="#starting-point-the-p_12-solution" id="toc-starting-point-the-p_12-solution" class="nav-link" data-scroll-target="#starting-point-the-p_12-solution">Starting point: the <span class="math inline">\(P_{12}\)</span> solution</a>
+  <ul class="collapse">
+  <li><a href="#truth-table" id="toc-truth-table" class="nav-link" data-scroll-target="#truth-table">Truth table</a></li>
+  <li><a href="#hidden-layer" id="toc-hidden-layer" class="nav-link" data-scroll-target="#hidden-layer">Hidden layer</a></li>
+  <li><a href="#output-unit" id="toc-output-unit" class="nav-link" data-scroll-target="#output-unit">Output unit</a></li>
+  </ul></li>
+  <li><a href="#retraining-on-new-tasks" id="toc-retraining-on-new-tasks" class="nav-link" data-scroll-target="#retraining-on-new-tasks">Retraining on new tasks</a>
+  <ul class="collapse">
+  <li><a href="#retraining-i-p_12to-p_23" id="toc-retraining-i-p_12to-p_23" class="nav-link" data-scroll-target="#retraining-i-p_12to-p_23">Retraining I: <span class="math inline">\(P_{12}\to P_{23}\)</span></a>
+  <ul class="collapse">
+  <li><a href="#what-changes-and-when" id="toc-what-changes-and-when" class="nav-link" data-scroll-target="#what-changes-and-when">What changes, and when</a></li>
+  </ul></li>
+  <li><a href="#retraining-ii-p_12to-p_123-reorientation-and-construction" id="toc-retraining-ii-p_12to-p_123-reorientation-and-construction" class="nav-link" data-scroll-target="#retraining-ii-p_12to-p_123-reorientation-and-construction">Retraining II: <span class="math inline">\(P_{12}\to P_{123}\)</span>, reorientation and construction</a>
+  <ul class="collapse">
+  <li><a href="#stage-1-the-two-planes-turn-in-opposite-directions" id="toc-stage-1-the-two-planes-turn-in-opposite-directions" class="nav-link" data-scroll-target="#stage-1-the-two-planes-turn-in-opposite-directions">Stage 1: the two planes turn in opposite directions</a></li>
+  <li><a href="#stage-2-a-long-wait-for-a-third-plane" id="toc-stage-2-a-long-wait-for-a-third-plane" class="nav-link" data-scroll-target="#stage-2-a-long-wait-for-a-third-plane">Stage 2: a long wait for a third plane</a></li>
+  <li><a href="#stage-3-the-third-plane-arrives" id="toc-stage-3-the-third-plane-arrives" class="nav-link" data-scroll-target="#stage-3-the-third-plane-arrives">Stage 3: the third plane arrives</a></li>
+  <li><a href="#the-final-arrangement" id="toc-the-final-arrangement" class="nav-link" data-scroll-target="#the-final-arrangement">The final arrangement</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="retraining-boundaries.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Retraining a small neural network: reorienting and building decision boundaries</h1>
+</div>
+
+<div>
+  <div class="description">
+    We track the epochal evolution of the decision boundaries of a 3-3-1 MLP, pre-trained for one task, as it learns a new task.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Shouvik Sur </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 28, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Most networks in use today are not trained from scratch. A network is first trained on one task and then <em>fine-tuned</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> on another. During fine-tuning the internal representation built for the first task is partly kept and partly overwritten <span class="citation" data-cites="kumar2022 kirkpatrick2017">(<a href="#ref-kumar2022" role="doc-biblioref">Kumar et al. 2022</a>; <a href="#ref-kirkpatrick2017" role="doc-biblioref"><span class="nocase">Kirkpatrick et al.</span> 2017</a>)</span>. Moreover, a narrow fine-tuning step can change a network’s behaviour far beyond the task it was fine-tuned on <span class="citation" data-cites="betley2025">(<a href="#ref-betley2025" role="doc-biblioref"><span class="nocase">Betley et al.</span> 2025</a>)</span>. To predict such changes, we need to know which parts of the old representation survive and which are replaced.</p>
+<p>Inspired by <em>model diffing</em> methods <span class="citation" data-cites="lindsey2024">(<a href="#ref-lindsey2024" role="doc-biblioref">Lindsey et al. 2024</a>)</span> and the established benefit of studying toy models to understand non-trivial aspects of large neural networks<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <span class="citation" data-cites="elhage2022">(<a href="#ref-elhage2022" role="doc-biblioref"><span class="nocase">Elhage et al.</span> 2022</a>)</span>, here, we will study how a network, pre-trained on <span class="math inline">\(m\)</span>-bit parity, modifies itself to learn <span class="math inline">\(n\)</span>-bit parity. We note that a recent study describes forgetting through the rotation and fading of feature vectors, in a toy model where all features needed for both tasks are fixed in advance and read out linearly <span class="citation" data-cites="masip2026">(<a href="#ref-masip2026" role="doc-biblioref">Masip et al. 2026</a>)</span>. Such a model cannot build a new feature. In the present note, the features are the nonlinear decision boundaries of the hidden units, and the network must both reorient its old boundaries and build new ones when the new task requires them.</p>
+<p>As such parity functions are the simplest Boolean functions that a single threshold unit cannot compute <span class="citation" data-cites="minsky1969">(<a href="#ref-minsky1969" role="doc-biblioref">Minsky and Papert 1969</a>)</span>. A hidden layer is therefore required. In <a href="../notes/Boolean-circuits_MLP.html">our discussion on the neural representation of 2-bit gates</a>, the exceptional property of the <code>XOR</code> gate results from the fact that it is a 2-bit parity operation. In particular, the two-layer perceptron needs to learn two decision boundaries to represent <code>XOR</code>: considering the four possible 2-bit inputs as the four corners of a square, learning <code>XOR</code> correponds to a staggered segmentation of the square into two distinct regions, as depicted in <a href="#fig-xor" class="quarto-xref">Figure&nbsp;1</a>. We will utilize this geometric intuition to interpret the network’s learning as it fine-tunes on <span class="math inline">\(N\)</span>-bit inputs with <span class="math inline">\(N&gt;2\)</span>.</p>
+<div id="square-functions" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show the code: Background script for plotting the decision boundaries for XOR</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">1</span>]], dtype<span class="op">=</span><span class="bu">float</span>)   <span class="co"># corners of the square</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>TEAL, PINK <span class="op">=</span> <span class="st">"#1D9E75"</span>, <span class="st">"#D4537E"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>LINE_COLOURS <span class="op">=</span> [<span class="st">"#7F77DD"</span>, <span class="st">"#EF9F27"</span>]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> draw_square(ax, W1, b1, w2, b2, P, title<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Corners coloured by P, hidden lines, regions shaded by the network output."""</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># shade the plane by the output of the threshold network</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> np.linspace(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="dv">300</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    x1, x2 <span class="op">=</span> np.meshgrid(g, g)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    pts <span class="op">=</span> np.column_stack([x1.ravel(), x2.ravel()])      <span class="co"># grid points as rows</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> pts <span class="op">@</span> W1.T <span class="op">+</span> b1 <span class="op">&gt;</span> <span class="dv">0</span>                                 <span class="co"># hidden codes</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> (h <span class="op">@</span> w2 <span class="op">+</span> b2 <span class="op">&gt;</span> <span class="dv">0</span>).reshape(x1.shape)                 <span class="co"># output bits</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    ax.contourf(x1, x2, y, levels<span class="op">=</span>[<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>], colors<span class="op">=</span>[TEAL, PINK], alpha<span class="op">=</span><span class="fl">0.15</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># hidden lines w.x + b = 0: point nearest the origin plus a direction along the line</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> w, b, c <span class="kw">in</span> <span class="bu">zip</span>(W1, b1, LINE_COLOURS):</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> w <span class="op">@</span> w <span class="op">==</span> <span class="dv">0</span>:                                      <span class="co"># a unit with zero weights has no line</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        p0, d <span class="op">=</span> <span class="op">-</span>b <span class="op">*</span> w <span class="op">/</span> (w <span class="op">@</span> w), np.array([<span class="op">-</span>w[<span class="dv">1</span>], w[<span class="dv">0</span>]]) <span class="op">/</span> np.linalg.norm(w)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        ax.plot(p0[<span class="dv">0</span>] <span class="op">+</span> t <span class="op">*</span> d[<span class="dv">0</span>], p0[<span class="dv">1</span>] <span class="op">+</span> t <span class="op">*</span> d[<span class="dv">1</span>], color<span class="op">=</span>c, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># square and corners</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    ax.plot([<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span><span class="st">"grey"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    ax.scatter(X[:, <span class="dv">0</span>], X[:, <span class="dv">1</span>], c<span class="op">=</span>[TEAL <span class="cf">if</span> p <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> PINK <span class="cf">for</span> p <span class="kw">in</span> P], s<span class="op">=</span><span class="dv">80</span>, zorder<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)<span class="op">;</span> ax.set_ylim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)<span class="op">;</span> ax.set_aspect(<span class="st">"equal"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="cell-fig-xor" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> X[:, <span class="dv">0</span>] <span class="op">*</span> X[:, <span class="dv">1</span>]  <span class="co"># XOR in product form</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">3.6</span>, <span class="fl">3.6</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>draw_square(ax, np.array([[<span class="fl">1.0</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">1</span>]]), np.array([<span class="fl">1.0</span>, <span class="op">-</span><span class="dv">1</span>]), np.array([<span class="fl">2.0</span>, <span class="op">-</span><span class="dv">2</span>]), <span class="op">-</span><span class="fl">1.0</span>, P)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove ticks and labels on both axes</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ax.set_xticks([])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-xor" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-xor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="retraining-boundaries_files/figure-html/fig-xor-output-1.png" width="285" height="285" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-xor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The corners of the unit square locate at (-1, -1), (-1, 1), (1, 1), (1, -1) [anti-clockwise]. The 2-bit parity of the <span class="math inline">\(i\)</span>-th corner is simply <span class="math inline">\(x_i y_i\)</span>, such that the green (red) corners carry even (odd) parity. Thus the classification of the plane into the red and green regions requires two decision boundaries (the blue and orange lines)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>General aspects of the geometric picture:</strong> Here, the geometric intuition that we will build for <span class="math inline">\(N\)</span>-bit inputs is based on representing the <span class="math inline">\(2^N\)</span> possible inputs as corners of a <span class="math inline">\(N\)</span>-dimensional cube. The binary outcome of the task (here, parity) colors these corners either green or red. The decision boundaries that the network needs to learn in order to generalize on the task correspond to constructing independent planes that intersect all edges of the hypercube which connect corners with distinct colors.</p>
+</section>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<section id="inputs-and-targets" class="level2">
+<h2 class="anchored" data-anchor-id="inputs-and-targets">Inputs and targets</h2>
+<p>The input is a vector of three bits, <span class="math inline">\(\vec{x}=(x_1,x_2,x_3)^T\)</span>, where each bit takes the value <span class="math inline">\(-1\)</span> or <span class="math inline">\(+1\)</span>. The <span class="math inline">\(2^3=8\)</span> possible inputs are the corners of a cube centred at the origin. For a set <span class="math inline">\(S\)</span> of bit indices, the parity function is the product of those bits, <span id="eq-parity"><span class="math display">\[
+P_S(\vec{x})=\prod_{j\in S}x_j .
+\tag{1}\]</span></span></p>
+<p><span class="math inline">\(P_S=+1\)</span> if the number of <span class="math inline">\(-1\)</span> entries among the bits in <span class="math inline">\(S\)</span> is even, and <span class="math inline">\(P_S=-1\)</span> if it is odd. We use three of these functions: <span id="eq-three-parities"><span class="math display">\[
+P_{12}=x_1x_2,\qquad P_{23}=x_2x_3,\qquad P_{123}=x_1x_2x_3 .
+\tag{2}\]</span></span></p>
+<p>The network outputs a bit <span class="math inline">\(y\in\{0,1\}\)</span>. The target bit for a parity <span class="math inline">\(P\)</span> is <span id="eq-label"><span class="math display">\[
+y=\frac{1-P}{2}.
+\tag{3}\]</span></span></p>
+<p>So <span class="math inline">\(y=1 \Rightarrow P=-1\)</span> and <span class="math inline">\(y=0 \Rightarrow P=+1\)</span>.</p>
+</section>
+<section id="the-network" class="level2">
+<h2 class="anchored" data-anchor-id="the-network">The network</h2>
+<p>The network has three inputs, one hidden layer of three units, and one output unit (a “3-3-1” network). The hidden activations form a vector <span class="math inline">\(\vec{h}=(h_1,h_2,h_3)^T\)</span>: <span id="eq-network"><span class="math display">\[
+\vec{h}=\Theta\!\left(W^{(1)}\vec{x}+\vec{b}^{(1)}\right),\qquad
+y=\Theta\!\left(\vec{w}^{(2)}\cdot\vec{h}+b^{(2)}\right).
+\tag{4}\]</span></span></p>
+<p>Here <span class="math inline">\(W^{(1)}\)</span> is a <span class="math inline">\(3\times3\)</span> matrix whose row <span class="math inline">\(i\)</span>, written <span class="math inline">\(\vec{w}_i\)</span>, holds the input weights of hidden unit <span class="math inline">\(i\)</span>. <span class="math inline">\(\vec{b}^{(1)}\)</span> is a 3-component vector of hidden biases. <span class="math inline">\(\vec{w}^{(2)}\)</span> is a 3-component vector of output weights, and <span class="math inline">\(b^{(2)}\)</span> is the output bias. <span class="math inline">\(\Theta\)</span> is the Heaviside step function, <span class="math inline">\(\Theta(u)=1\)</span> for <span class="math inline">\(u&gt;0\)</span> and <span class="math inline">\(\Theta(u)=0\)</span> for <span class="math inline">\(u&lt;0\)</span>, applied to each component separately. Note that <span class="math inline">\(\Theta(0)\)</span> usually needs to be specially defined, but in all the examples below no argument of <span class="math inline">\(\Theta\)</span> is ever exactly zero, so the exact value <span class="math inline">\(\Theta(0)\)</span> is unimportant here.</p>
+</section>
+<section id="hidden-units-are-planes" class="level2">
+<h2 class="anchored" data-anchor-id="hidden-units-are-planes">Hidden units are planes</h2>
+<p>The <span class="math inline">\(i\)</span>-th hidden unit switches on when <span class="math inline">\(\vec{w}_i\cdot\vec{x}+b_i&gt;0\)</span>. The boundary between <code>on</code> and <code>off</code> is the plane <span id="eq-plane"><span class="math display">\[
+\vec{w}_i\cdot\vec{x}+b_i=0
+\quad\Longleftrightarrow\quad
+\hat{w}_i\cdot\vec{x}=d_i,
+\qquad
+\hat{w}_i=\frac{\vec{w}_i}{|\vec{w}_i|},\quad d_i=-\frac{b_i}{|\vec{w}_i|}.
+\tag{5}\]</span></span></p>
+<p>The unit vector <span class="math inline">\(\hat{w}_i\)</span> is the normal of the plane<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, and <span class="math inline">\(d_i\)</span> is its signed distance from the centre of the cube. This <span class="math inline">\(i\)</span>-th plane divides the embedding space of the cube into two regions, with the hidden unit being <code>on</code> for the corners of the cube that lie on the side of the plane into which <span class="math inline">\(\hat{w}_i\)</span> points.</p>
+<p>The plane crosses the cube only if it has corners on both of its sides. The largest value of <span class="math inline">\(\hat{w}_i\cdot\vec{x}\)</span> over the corners is <span class="math inline">\(\sum_j|\hat{w}_{ij}|\)</span>, obtained by choosing each <span class="math inline">\(x_j\)</span> equal to the sign of <span class="math inline">\(\hat{w}_{ij}\)</span>. The smallest value is minus the same number. The plane therefore cuts the cube when <span id="eq-inside"><span class="math display">\[
+|d_i|&lt;\sum_{j=1}^{3}|\hat{w}_{ij}| ,
+\tag{6}\]</span></span> and lies entirely outside the cube otherwise.</p>
+<p>Thus, the three bits <span class="math inline">\((h_1,h_2,h_3)\)</span> of a corner record on which side of each plane the corner lies. We call them the <strong>hidden code</strong> of the corner. The output unit sees only these codes. Two corners with the same code lead to the same output, irrespective of their inputs.</p>
+</section>
+<section id="training-with-a-smooth-step" class="level2">
+<h2 class="anchored" data-anchor-id="training-with-a-smooth-step">Training with a smooth step</h2>
+<p><span class="math inline">\(\Theta\)</span> has zero slope everywhere except at <span class="math inline">\(x=0\)</span><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, so gradient descent cannot train it. During training we therefore replace <span class="math inline">\(\Theta\)</span> by the sigmoid <span class="math inline">\(\sigma_\beta(u)=1/(1+e^{-\beta u})\)</span><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, in both layers of <a href="#eq-network" class="quarto-xref">Equation&nbsp;4</a>. The sigmoid crosses <span class="math inline">\(1/2\)</span> at <span class="math inline">\(u=0\)</span>, exactly where <span class="math inline">\(\Theta\)</span> jumps. A hidden unit therefore has the same plane, <a href="#eq-plane" class="quarto-xref">Equation&nbsp;5</a>, whichever function we use. We train with the sigmoid and interpret the geometry, the planes and the hidden codes, with <span class="math inline">\(\Theta\)</span><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
+<p><strong>Note:</strong> Multiplying all weights and biases of a layer by a positive number <span class="math inline">\(\beta\)</span> leaves every plane, and every <span class="math inline">\(\Theta\)</span> output, unchanged. It only sharpens the sigmoid, so the sigmoid network approaches the threshold network as <span class="math inline">\(\beta\)</span> grows. We start training from integer threshold solutions scaled by <span class="math inline">\(\beta_h=4\)</span> (hidden layer) and <span class="math inline">\(\beta_o=3\)</span> (output layer). The training loss is the binary cross-entropy between <span class="math inline">\(\sigma\)</span> of the output pre-activation and the target bit, <a href="#eq-label" class="quarto-xref">Equation&nbsp;3</a>, averaged over the 8 corners. We use plain gradient descent on all 8 corners at once, learning rate <span class="math inline">\(0.1\)</span>, for 20000 epochs, in double precision.</p>
+<div id="setup" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code: corners, parities and training</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>torch.set_default_dtype(torch.float64)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># the 8 corners of the cube, as rows; row k is the k-th corner</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.tensor(<span class="bu">list</span>(itertools.product([<span class="op">-</span><span class="fl">1.0</span>, <span class="fl">1.0</span>], repeat<span class="op">=</span><span class="dv">3</span>)))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>Xn <span class="op">=</span> X.numpy()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parity(bits):</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Product of the chosen bits (0-based indices) at each corner: +1 or -1."""</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.prod(X[:, bits], dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>P12, P23, P123 <span class="op">=</span> parity([<span class="dv">0</span>, <span class="dv">1</span>]), parity([<span class="dv">1</span>, <span class="dv">2</span>]), parity([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>])</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># integer threshold solution of P12 (derived in the section "Starting point")</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>W1_start <span class="op">=</span> torch.tensor([[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>], [<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>], [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>]])</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>b1_start <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>])</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>w2_start <span class="op">=</span> torch.tensor([<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">0.0</span>])</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>b2_start <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train(P, epochs<span class="op">=</span><span class="dv">20000</span>, lr<span class="op">=</span><span class="fl">0.1</span>, beta_h<span class="op">=</span><span class="fl">4.0</span>, beta_o<span class="op">=</span><span class="fl">3.0</span>):</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Train the 3-3-1 sigmoid network on parity P, starting from the scaled P12 solution.</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns the weights before every update, as numpy arrays (epoch is the first index)."""</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    hidden <span class="op">=</span> torch.nn.Linear(<span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> torch.nn.Linear(<span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        hidden.weight.copy_(beta_h <span class="op">*</span> W1_start)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        hidden.bias.copy_(beta_h <span class="op">*</span> b1_start)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        output.weight.copy_(beta_o <span class="op">*</span> w2_start.reshape(<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        output.bias.fill_(beta_o <span class="op">*</span> b2_start)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    optimiser <span class="op">=</span> torch.optim.SGD(<span class="bu">list</span>(hidden.parameters()) <span class="op">+</span> <span class="bu">list</span>(output.parameters()), lr<span class="op">=</span>lr)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    loss_fn <span class="op">=</span> torch.nn.BCEWithLogitsLoss()      <span class="co"># sigmoid + binary cross-entropy, mean over corners</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> P) <span class="op">/</span> <span class="dv">2</span>                             <span class="co"># target bits</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    record <span class="op">=</span> {<span class="st">"W1"</span>: [], <span class="st">"b1"</span>: [], <span class="st">"w2"</span>: [], <span class="st">"b2"</span>: []}</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(epochs <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        record[<span class="st">"W1"</span>].append(hidden.weight.detach().numpy().copy())</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>        record[<span class="st">"b1"</span>].append(hidden.bias.detach().numpy().copy())</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>        record[<span class="st">"w2"</span>].append(output.weight.detach().numpy()[<span class="dv">0</span>].copy())</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        record[<span class="st">"b2"</span>].append(<span class="bu">float</span>(output.bias.detach()[<span class="dv">0</span>]))</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>        z <span class="op">=</span> output(torch.sigmoid(hidden(X))).squeeze(<span class="dv">1</span>)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(z, y)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        optimiser.zero_grad()</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        optimiser.step()</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {key: np.array(val) <span class="cf">for</span> key, val <span class="kw">in</span> record.items()}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="geometry-helpers" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code: threshold reading and cube drawing</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d.art3d <span class="im">import</span> Poly3DCollection</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>TEAL, PINK, RED, GREY <span class="op">=</span> <span class="st">"#1D9E75"</span>, <span class="st">"#D4537E"</span>, <span class="st">"#E24B4A"</span>, <span class="st">"#888780"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>UNIT_COLOURS <span class="op">=</span> [<span class="st">"#7F77DD"</span>, <span class="st">"#EF9F27"</span>, <span class="st">"#378ADD"</span>]          <span class="co"># planes of units 1, 2, 3</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>EDGES <span class="op">=</span> [(i, j) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, <span class="dv">8</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>         <span class="cf">if</span> np.<span class="bu">sum</span>(Xn[i] <span class="op">!=</span> Xn[j]) <span class="op">==</span> <span class="dv">1</span>]                  <span class="co"># the 12 cube edges</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> codes(W1, b1):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Hidden codes (8 x 3 array of 0/1) read with the Heaviside step."""</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (Xn <span class="op">@</span> W1.T <span class="op">+</span> b1 <span class="op">&gt;</span> <span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> outputs(W1, b1, w2, b2):</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Output bits of the threshold network at the 8 corners."""</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (codes(W1, b1) <span class="op">@</span> w2 <span class="op">+</span> b2 <span class="op">&gt;</span> <span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> section(w, b):</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Corners of the polygon where the plane w.x + b = 0 cuts the cube (empty if it misses)."""</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.linalg.norm(w) <span class="op">&lt;</span> <span class="fl">1e-8</span>:</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.zeros((<span class="dv">0</span>, <span class="dv">3</span>))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    pts <span class="op">=</span> []</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, j <span class="kw">in</span> EDGES:</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        fi, fj <span class="op">=</span> w <span class="op">@</span> Xn[i] <span class="op">+</span> b, w <span class="op">@</span> Xn[j] <span class="op">+</span> b</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> fi <span class="op">*</span> fj <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>            t <span class="op">=</span> fi <span class="op">/</span> (fi <span class="op">-</span> fj)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            pts.append(Xn[i] <span class="op">+</span> t <span class="op">*</span> (Xn[j] <span class="op">-</span> Xn[i]))</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(pts) <span class="op">&lt;</span> <span class="dv">3</span>:</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.zeros((<span class="dv">0</span>, <span class="dv">3</span>))</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    pts <span class="op">=</span> np.array(pts)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    centre <span class="op">=</span> pts.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> w <span class="op">/</span> np.linalg.norm(w)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> np.cross(n, [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>]) <span class="cf">if</span> <span class="bu">abs</span>(n[<span class="dv">0</span>]) <span class="op">&lt;</span> <span class="fl">0.9</span> <span class="cf">else</span> np.cross(n, [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    u <span class="op">=</span> u <span class="op">/</span> np.linalg.norm(u)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> np.cross(n, u)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    angle <span class="op">=</span> np.arctan2((pts <span class="op">-</span> centre) <span class="op">@</span> v, (pts <span class="op">-</span> centre) <span class="op">@</span> u)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pts[np.argsort(angle)]</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> draw_cube(ax, W1, b1, P, title<span class="op">=</span><span class="st">""</span>, show_codes<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Cube with corners coloured by parity P, hidden planes, and edge styles:</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="co">    dashed = both ends have the same P; dark = different P, cut by a plane;</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="co">    thick red = different P, cut by no plane."""</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        poly <span class="op">=</span> section(W1[i], b1[i])</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(poly):</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>            ax.add_collection3d(Poly3DCollection([poly], alpha<span class="op">=</span><span class="fl">0.25</span>,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                                facecolor<span class="op">=</span>UNIT_COLOURS[i], edgecolor<span class="op">=</span>UNIT_COLOURS[i]))</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, j <span class="kw">in</span> EDGES:</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        seg <span class="op">=</span> np.array([Xn[i], Xn[j]]).T</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> P[i] <span class="op">==</span> P[j]:</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>            ax.plot(<span class="op">*</span>seg, color<span class="op">=</span>GREY, lw<span class="op">=</span><span class="fl">0.8</span>, ls<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">any</span>((W1[k] <span class="op">@</span> Xn[i] <span class="op">+</span> b1[k]) <span class="op">*</span> (W1[k] <span class="op">@</span> Xn[j] <span class="op">+</span> b1[k]) <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>)):</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>            ax.plot(<span class="op">*</span>seg, color<span class="op">=</span><span class="st">"#444441"</span>, lw<span class="op">=</span><span class="fl">1.4</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>            ax.plot(<span class="op">*</span>seg, color<span class="op">=</span>RED, lw<span class="op">=</span><span class="fl">3.5</span>)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    H <span class="op">=</span> codes(W1, b1)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>        ax.scatter(<span class="op">*</span>Xn[k], color<span class="op">=</span>TEAL <span class="cf">if</span> P[k] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> PINK, s<span class="op">=</span><span class="dv">60</span>, depthshade<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> show_codes:</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>            ax.text(<span class="op">*</span>(<span class="fl">1.3</span> <span class="op">*</span> Xn[k]), <span class="st">""</span>.join(<span class="bu">map</span>(<span class="bu">str</span>, H[k])), fontsize<span class="op">=</span><span class="dv">7</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>                    family<span class="op">=</span><span class="st">"monospace"</span>, ha<span class="op">=</span><span class="st">"center"</span>)</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)<span class="op">;</span> ax.set_ylim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)<span class="op">;</span> ax.set_zlim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    ax.set_box_aspect((<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    ax.set_xticks([])<span class="op">;</span> ax.set_yticks([])<span class="op">;</span> ax.set_zticks([])</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"$x_1$"</span>, labelpad<span class="op">=-</span><span class="dv">12</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"$x_2$"</span>, labelpad<span class="op">=-</span><span class="dv">12</span>)</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    ax.set_zlabel(<span class="st">"$x_3$"</span>, labelpad<span class="op">=-</span><span class="dv">12</span>)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    ax.view_init(elev<span class="op">=</span><span class="dv">20</span>, azim<span class="op">=</span><span class="dv">27</span>)     <span class="co"># no plane of interest is seen edge-on from here</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>    ax.set_title(title, fontsize<span class="op">=</span><span class="dv">9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="what-rest-of-this-note-shows" class="level2">
+<h2 class="anchored" data-anchor-id="what-rest-of-this-note-shows">What rest of this note shows</h2>
+<p>A 3-3-1 network that has learned <span class="math inline">\(P_{12}\)</span> is retrained, first on <span class="math inline">\(P_{23}\)</span> and then on <span class="math inline">\(P_{123}\)</span>. For <span class="math inline">\(P_{23}\)</span>, the network keeps both of its planes and turns them, as a pair, into a new orientation. For <span class="math inline">\(P_{123}\)</span>, the network turns its two planes into new orientations and, in addition, builds a third plane from a hidden unit that was idle. In both cases we identify the individual events through which the old solution evolves into the new one.</p>
+</section>
+</section>
+<section id="starting-point-the-p_12-solution" class="level1">
+<h1>Starting point: the <span class="math inline">\(P_{12}\)</span> solution</h1>
+<section id="truth-table" class="level2">
+<h2 class="anchored" data-anchor-id="truth-table">Truth table</h2>
+<p><span class="math inline">\(P_{12}=x_1x_2\)</span> does not depend on <span class="math inline">\(x_3\)</span>, which implies that, in our solution for the network parameters needed to learn the current task, <span class="math inline">\(x_3\)</span> can be a cyclic or “dummy” variable. It is convenient to adopt an equivalent definition of <span class="math inline">\(P_{12}\)</span> as the sum <span class="math inline">\(s_{12}=x_1+x_2\in\{-2,0,2\}\)</span>.</p>
+<p>In the spirit of the 2-bit gates <a href="../notes/Boolean-circuits_MLP.html">studied earlier</a>, we construct a truth table for the present task:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(x_1\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(x_2\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(s_{12}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(P_{12}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>We readily identify the <code>XOR</code> gate embedded within the <span class="math inline">\(x_1\)</span>-<span class="math inline">\(x_2\)</span> subspace.</p>
+</section>
+<section id="hidden-layer" class="level2">
+<h2 class="anchored" data-anchor-id="hidden-layer">Hidden layer</h2>
+<p>We place unit 1 in the gap between <span class="math inline">\(s_{12}=-2\)</span> and <span class="math inline">\(s_{12}=0\)</span>, and unit 2 in the gap between <span class="math inline">\(s_{12}=0\)</span> and <span class="math inline">\(s_{12}=2\)</span>:</p>
+<p><span id="eq-xor-planes"><span class="math display">\[
+h_1=\Theta(x_1+x_2+1),\qquad h_2=\Theta(x_1+x_2-1).
+\tag{7}\]</span></span></p>
+<p>Both planes contain the <span class="math inline">\(x_3\)</span> direction, so neither depends on <span class="math inline">\(x_3\)</span>. Unit 3 is switched off: we give it zero input weights and a negative bias, <span class="math inline">\(h_3=\Theta(-1)=0\)</span> at every corner. It has no plane. Each corner now carries one of three codes:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(s_{12}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(h_1\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(h_2\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(h_3\)</span></th>
+<th style="text-align: center;">code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(-2\)</span></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">000</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(+2\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">110</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="output-unit" class="level2">
+<h2 class="anchored" data-anchor-id="output-unit">Output unit</h2>
+<p>With <span class="math inline">\(h_3=0\)</span> throughout, the output pre-activation is <span class="math inline">\(w^{(2)}_1h_1+w^{(2)}_2h_2+b^{(2)}\)</span>. The three codes impose three inequalities: <span id="eq-xor-inequalities"><span class="math display">\[
+\begin{aligned}
+\text{code }000\ (y=0):&amp;\quad b^{(2)}&lt;0,\\
+\text{code }100\ (y=1):&amp;\quad w^{(2)}_1+b^{(2)}&gt;0,\\
+\text{code }110\ (y=0):&amp;\quad w^{(2)}_1+w^{(2)}_2+b^{(2)}&lt;0 .
+\end{aligned}
+\tag{8}\]</span></span></p>
+<p>We choose <span class="math inline">\(\vec{w}^{(2)}=(2,-2,0)\)</span> and <span class="math inline">\(b^{(2)}=-1\)</span>. Then <span class="math inline">\(b^{(2)}=-1&lt;0\)</span>, <span class="math inline">\(w^{(2)}_1+b^{(2)}=1&gt;0\)</span>, and <span class="math inline">\(w^{(2)}_1+w^{(2)}_2+b^{(2)}=-1&lt;0\)</span> will satisfy the three inequalities in <a href="#eq-xor-inequalities" class="quarto-xref">Equation&nbsp;8</a>.</p>
+<p>Collecting the solutions, we obtain the starting parameters: <span id="eq-start"><span class="math display">\[
+W^{(1)}=\begin{pmatrix}1&amp;1&amp;0\\1&amp;1&amp;0\\0&amp;0&amp;0\end{pmatrix},\quad
+\vec{b}^{(1)}=\begin{pmatrix}1\\-1\\-1\end{pmatrix},\quad
+\vec{w}^{(2)}=\begin{pmatrix}2&amp;-2&amp;0\end{pmatrix},\quad
+b^{(2)}=-1 .
+\tag{9}\]</span></span></p>
+<p><a href="#fig-start" class="quarto-xref">Figure&nbsp;2</a> shows the two planes. It should be compared with <a href="#fig-xor" class="quarto-xref">Figure&nbsp;1</a> which is the projection of the figure on the <span class="math inline">\(x_1\)</span>-<span class="math inline">\(x_2\)</span> plane. In this t3D setting, we note that every edge of the cube along <span class="math inline">\(x_1\)</span> or <span class="math inline">\(x_2\)</span> joins corners with different <span class="math inline">\(P_{12}\)</span>, and each such edge is cut by one of the planes. The edges along <span class="math inline">\(x_3\)</span> join corners with the same <span class="math inline">\(P_{12}\)</span>, and need no cut.</p>
+<div id="cell-fig-start" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="fl">4.2</span>, <span class="fl">4.2</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> fig.add_subplot(projection<span class="op">=</span><span class="st">"3d"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>draw_cube(ax, W1_start.numpy(), b1_start.numpy(), P12.numpy())</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-start" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-start-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="retraining-boundaries_files/figure-html/fig-start-output-1.png" width="330" height="330" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-start-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The starting network, coloured by <span class="math inline">\(P_{12}\)</span> (green <span class="math inline">\(+1\)</span>, red <span class="math inline">\(-1\)</span>). Purple and amber: the planes <span class="math inline">\(x_1+x_2=-1\)</span> and <span class="math inline">\(x_1+x_2=+1\)</span> of units 1 and 2. Labels: hidden codes <span class="math inline">\(h_1h_2h_3\)</span>. Dark edges join corners of different <span class="math inline">\(P_{12}\)</span> and are cut by a plane; dashed edges join corners of equal <span class="math inline">\(P_{12}\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="retraining-on-new-tasks" class="level1">
+<h1>Retraining on new tasks</h1>
+<p>We now retrain this network on two distinct new tasks. Before embarking on the details, we briefly note a connection of the present work with an earlier work by Pratt <span class="citation" data-cites="pratt1992">(<a href="#ref-pratt1992" role="doc-biblioref">Pratt 1992</a>)</span>, where, with the objective of accelerating the learning of a new task, Pratt initialized networks using hidden-unit hyperplanes from a previously trained model. By rescaling each unit’s weights based on how well its plane separated the new data, the algorithm kept well-placed boundaries firm while leaving poorly placed ones free to adapt. Although this established that learned boundaries can be reused to speed up learning, it did not systematically track how the hyperplanes move during retraining, nor did it ask whether idle units can be recruited to construct new boundaries. Below, we map these aspects across two retraining tasks.</p>
+<p>The <strong>first task</strong> corresponds to an “orthogonal” embedding of the <code>XOR</code> gate in the <span class="math inline">\(x_2\)</span>-<span class="math inline">\(x_3\)</span> plane: the 2-bit parity <span class="math inline">\(P_{23}\)</span>. This will require the two decision boundaries to be non-trivial on the <span class="math inline">\(x_2\)</span>-<span class="math inline">\(x_3\)</span> plane, as <span class="math inline">\(x_1\)</span> becomes cyclic. Therefore, we expect the retraining will <em>rotate</em> the original decision boundaries by <span class="math inline">\(60^\circ\)</span> (see below: <a href="#eq-sixty" class="quarto-xref">Equation&nbsp;11</a>).</p>
+<p>The <strong>second task</strong> belongs to a new category as it involves all three bits: <span class="math inline">\(P_{123} = x_1 x_2 x_3\)</span>. The decision boundaries in this case is more non-trivial and numerous. Naively, for an <span class="math inline">\(N\)</span>-bit input the <em>maximal parity</em> <span class="math inline">\(P_{12\ldots N} = \prod_{j=1}^N x_j\)</span> can be solved by <span class="math inline">\(N\)</span> decision boundaries, and <strong>a geometrically appealing solution exists where the <span class="math inline">\(N\)</span> boundaries are equally spaced along the body-diagonal of the <span class="math inline">\(N\)</span> dimensional cube</strong>. Although this intuition is true for <span class="math inline">\(N\leq 5\)</span>, for larger <span class="math inline">\(N\)</span> fewer than <span class="math inline">\(N\)</span> decision boundaries may suffice <span class="citation" data-cites="saks1993">(<a href="#ref-saks1993" role="doc-biblioref">Saks 1993</a>)</span>. Two points are of note:</p>
+<ul>
+<li>Given an ideal mathematical solution, such as the one above, the retraining may settle for different orientation of the decision boundaries.</li>
+<li>Although for larger <span class="math inline">\(N\)</span> it is expected that a smaller number of decision boundaries suffices, it is unclear whether a 1-hidden layer network will be able to find that solution.</li>
+</ul>
+<p>For the present case <span class="math inline">\(N=3\)</span> and we shall explicitly study the generation of the third decision boundary, along with reorientation of the two boundaries that already exists.</p>
+<section id="retraining-i-p_12to-p_23" class="level2">
+<h2 class="anchored" data-anchor-id="retraining-i-p_12to-p_23">Retraining I: <span class="math inline">\(P_{12}\to P_{23}\)</span></h2>
+<p>We start from <a href="#eq-start" class="quarto-xref">Equation&nbsp;9</a>, scaled as described in the Setup, and train on <span class="math inline">\(P_{23}\)</span>.</p>
+<p>Before discussing the details of the retraining, we note that <span class="math inline">\(P_{23}=x_2x_3\)</span> is obtained from <span class="math inline">\(P_{12}=x_1x_2\)</span> by exchanging the roles of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_3\)</span>. Exchanging <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_3\)</span> in <a href="#eq-xor-planes" class="quarto-xref">Equation&nbsp;7</a> gives two planes that solve <span class="math inline">\(P_{23}\)</span>:</p>
+<p><span id="eq-p23-planes"><span class="math display">\[
+x_2+x_3=-1,\qquad x_2+x_3=+1 .
+\tag{10}\]</span></span></p>
+<p>Two planes are therefore enough. To reach them, the network has to turn its planes: the normals must move from the direction <span class="math inline">\((1,1,0)/\sqrt{2}\)</span> to the direction <span class="math inline">\((0,1,1)/\sqrt{2}\)</span>. The angle <span class="math inline">\(\alpha\)</span> between these directions follows from their scalar product,</p>
+<p><span id="eq-sixty"><span class="math display">\[
+\cos\alpha=\frac{(1,1,0)\cdot(0,1,1)}{\sqrt{2}\,\sqrt{2}}=\frac{1}{2}
+\quad\Longrightarrow\quad \alpha=60^\circ .
+\tag{11}\]</span></span></p>
+<div id="train-p23" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show the code: training on P23 and listing the events</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>run23 <span class="op">=</span> train(P23)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> events(run, P):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Epochs at which any corner changes side of any plane, with the corners involved."""</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> []</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    previous <span class="op">=</span> codes(run[<span class="st">"W1"</span>][<span class="dv">0</span>], run[<span class="st">"b1"</span>][<span class="dv">0</span>])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(run[<span class="st">"W1"</span>])):</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        current <span class="op">=</span> codes(run[<span class="st">"W1"</span>][epoch], run[<span class="st">"b1"</span>][epoch])</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        moved <span class="op">=</span> np.where((current <span class="op">!=</span> previous).<span class="bu">any</span>(axis<span class="op">=</span><span class="dv">1</span>))[<span class="dv">0</span>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(moved):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            correct <span class="op">=</span> <span class="bu">int</span>((outputs(run[<span class="st">"W1"</span>][epoch], run[<span class="st">"b1"</span>][epoch],</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                                   run[<span class="st">"w2"</span>][epoch], run[<span class="st">"b2"</span>][epoch]) <span class="op">==</span> (<span class="dv">1</span> <span class="op">-</span> P) <span class="op">/</span> <span class="dv">2</span>).<span class="bu">sum</span>())</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> k <span class="kw">in</span> moved:</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                out.append((epoch, <span class="bu">tuple</span>(<span class="bu">int</span>(v) <span class="cf">for</span> v <span class="kw">in</span> Xn[k]),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                            <span class="st">""</span>.join(<span class="bu">map</span>(<span class="bu">str</span>, previous[k])), <span class="st">""</span>.join(<span class="bu">map</span>(<span class="bu">str</span>, current[k])), correct))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        previous <span class="op">=</span> current</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch, corner, old, new, correct <span class="kw">in</span> events(run23, P23.numpy()):</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"epoch </span><span class="sc">{</span>epoch<span class="sc">:5d}</span><span class="ss">: corner </span><span class="sc">{</span>corner<span class="sc">}</span><span class="ss">  code </span><span class="sc">{</span>old<span class="sc">}</span><span class="ss"> -&gt; </span><span class="sc">{</span>new<span class="sc">}</span><span class="ss">   output correct on </span><span class="sc">{</span>correct<span class="sc">}</span><span class="ss">/8"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>epoch   390: corner (-1, -1, 1)  code 000 -&gt; 100   output correct on 5/8
+epoch   465: corner (1, -1, -1)  code 100 -&gt; 000   output correct on 6/8
+epoch   489: corner (1, 1, -1)  code 110 -&gt; 100   output correct on 7/8
+epoch   525: corner (-1, 1, 1)  code 100 -&gt; 110   output correct on 8/8</code></pre>
+</div>
+</div>
+<section id="what-changes-and-when" class="level3">
+<h3 class="anchored" data-anchor-id="what-changes-and-when">What changes, and when</h3>
+<p>At the start the planes are those of <a href="#fig-start" class="quarto-xref">Figure&nbsp;2</a>, and the network is correct on <span class="math inline">\(P_{23}\)</span> at 4 of the 8 corners. These are the corners with <span class="math inline">\(x_1=x_3\)</span>. There <span class="math inline">\(P_{23}=x_2x_3\)</span> equals <span class="math inline">\(P_{12}=x_1x_2\)</span>, so the old answer happens to be right. At the four corners with <span class="math inline">\(x_1\neq x_3\)</span> the two parities differ, and the old answer is wrong.</p>
+<p>Training repairs these four corners one at a time. Each repair is a single <strong>event</strong>: one corner crosses one plane, so its hidden code changes.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">epoch</th>
+<th style="text-align: center;">corner <span class="math inline">\((x_1,x_2,x_3)\)</span></th>
+<th style="text-align: center;">plane crossed</th>
+<th style="text-align: center;">code before <span class="math inline">\(\to\)</span> after</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">390</td>
+<td style="text-align: center;"><span class="math inline">\((-1,-1,+1)\)</span></td>
+<td style="text-align: center;">enters the <code>on</code> side of plane 1</td>
+<td style="text-align: center;"><span class="math inline">\(000\to100\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">465</td>
+<td style="text-align: center;"><span class="math inline">\((+1,-1,-1)\)</span></td>
+<td style="text-align: center;">leaves the <code>on</code> side of plane 1</td>
+<td style="text-align: center;"><span class="math inline">\(100\to000\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">489</td>
+<td style="text-align: center;"><span class="math inline">\((+1,+1,-1)\)</span></td>
+<td style="text-align: center;">leaves the <code>on</code> side of plane 2</td>
+<td style="text-align: center;"><span class="math inline">\(110\to100\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">525</td>
+<td style="text-align: center;"><span class="math inline">\((-1,+1,+1)\)</span></td>
+<td style="text-align: center;">enters the <code>on</code> side of plane 2</td>
+<td style="text-align: center;"><span class="math inline">\(100\to110\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>All four corners have <span class="math inline">\(x_1\neq x_3\)</span>. After the event at epoch 525 the codes depend only on <span class="math inline">\(x_2+x_3\)</span>, and the network computes <span class="math inline">\(P_{23}\)</span> at all 8 corners. Since the target solution is reached by epoch 525, the network no longer <em>qualitatively</em> modifies itself under additional epochal evolution. <a href="#fig-p23-snapshots" class="quarto-xref">Figure&nbsp;3</a> shows the cube at each event; note the quantitative modifications to the decision boundaries beyond epoch 525. In the asymptotic regime, the new decision boundaries approach the estimate in <a href="#eq-sixty" class="quarto-xref">Equation&nbsp;11</a>.</p>
+<div id="cell-fig-p23-snapshots" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="fl">2.6</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, epoch <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="dv">0</span>, <span class="dv">390</span>, <span class="dv">465</span>, <span class="dv">489</span>, <span class="dv">525</span>, <span class="dv">20000</span>]):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> fig.add_subplot(<span class="dv">1</span>, <span class="dv">6</span>, k <span class="op">+</span> <span class="dv">1</span>, projection<span class="op">=</span><span class="st">"3d"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    draw_cube(ax, run23[<span class="st">"W1"</span>][epoch], run23[<span class="st">"b1"</span>][epoch], P23.numpy(), title<span class="op">=</span><span class="ss">f"epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-p23-snapshots" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-p23-snapshots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="retraining-boundaries_files/figure-html/fig-p23-snapshots-output-1.png" width="1238" height="228" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-p23-snapshots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Retraining on <span class="math inline">\(P_{23}\)</span>. Corners are coloured by the new target <span class="math inline">\(P_{23}\)</span>. Each panel is one epoch: the start, the four events, and the end of training. Thick red edges join corners of different <span class="math inline">\(P_{23}\)</span> that no plane separates. The two planes turn together, from containing the <span class="math inline">\(x_3\)</span> direction to containing the <span class="math inline">\(x_1\)</span> direction. Unit 3 never builds a plane inside the cube.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="retraining-ii-p_12to-p_123-reorientation-and-construction" class="level2">
+<h2 class="anchored" data-anchor-id="retraining-ii-p_12to-p_123-reorientation-and-construction">Retraining II: <span class="math inline">\(P_{12}\to P_{123}\)</span>, reorientation and construction</h2>
+<p>We start again from <a href="#eq-start" class="quarto-xref">Equation&nbsp;9</a> and now train on <span class="math inline">\(P_{123}=x_1x_2x_3\)</span> which changes sign when any single bit is flipped. All 12 edges of the cube therefore join corners with different targets, and all 12 must be cut by the decision boundaries.</p>
+<p><strong>One plane cuts at most 6 edges.</strong> A plane that crosses the cube meets it in a flat polygon. Each side of the polygon lies in one face of the cube, and different sides lie in different faces. The cube has 6 faces, so the polygon has at most 6 sides, and therefore at most 6 corners. Each corner of the polygon is a point where the plane crosses one edge of the cube. So a plane crosses at most 6 edges <span class="citation" data-cites="oneil1971">(<a href="#ref-oneil1971" role="doc-biblioref">O’Neil 1971</a>)</span>. Two planes cut at most 12 edges. They could cut all 12 only if both cross sections were hexagons, and if the two hexagons crossed different edges.</p>
+<p><strong>Which planes cut 6 edges.</strong> Suppose a plane leaves <span class="math inline">\(k\)</span> corners on one side, and <span class="math inline">\(e\)</span> edges join two of these corners. Each corner has 3 edges. Of the <span class="math inline">\(3k\)</span> edges leaving these corners, the <span class="math inline">\(e\)</span> internal ones are counted twice and are not cut. The number of cut edges is therefore <span class="math inline">\(3k-2e\)</span>. A hexagon needs <span class="math inline">\(3k-2e=6\)</span>. One can check, by listing the possible groups of corners, that the only groups a plane can actually separate with <span class="math inline">\(3k-2e=6\)</span> are a corner together with its three neighbours (<span class="math inline">\(k=4\)</span>, <span class="math inline">\(e=3\)</span>). Such a plane is perpendicular to the body diagonal through that corner. It crosses the cube in a hexagon around the middle of that diagonal, and it misses exactly the 6 edges that touch the two ends of the diagonal. Panel (a) of <a href="#fig-two-hexagons" class="quarto-xref">Figure&nbsp;4</a> shows the hexagon perpendicular to the diagonal from <span class="math inline">\((-1,-1,-1)\)</span> to <span class="math inline">\((1,1,1)\)</span>.</p>
+<p><strong>Two hexagons always miss an edge.</strong> Let the two hexagons be perpendicular to the diagonals <span class="math inline">\(A\bar{A}\)</span> and <span class="math inline">\(B\bar{B}\)</span>, where <span class="math inline">\(\bar{A}\)</span> is the corner opposite to <span class="math inline">\(A\)</span>. Every corner other than <span class="math inline">\(A\)</span> and <span class="math inline">\(\bar{A}\)</span> is a neighbour of either <span class="math inline">\(A\)</span> or <span class="math inline">\(\bar{A}\)</span>. Suppose <span class="math inline">\(B\)</span> is a neighbour of <span class="math inline">\(A\)</span>. The edge from <span class="math inline">\(A\)</span> to <span class="math inline">\(B\)</span> touches the diagonal <span class="math inline">\(A\bar{A}\)</span>, so the first hexagon misses it. It also touches the diagonal <span class="math inline">\(B\bar{B}\)</span>, so the second hexagon misses it too. Panel (b) of <a href="#fig-two-hexagons" class="quarto-xref">Figure&nbsp;4</a> shows this for the diagonals through <span class="math inline">\((1,1,1)\)</span> and through <span class="math inline">\((1,1,-1)\)</span>. Two edges along <span class="math inline">\(x_3\)</span> remain uncut. We will meet these two edges again during training.</p>
+<p><span class="math inline">\(P_{123}\)</span> therefore needs a third plane. Our network has a third hidden unit, but at the start it is switched off. The network will have to build the third plane from this unit.</p>
+<div id="cell-fig-two-hexagons" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>W_a <span class="op">=</span> np.array([[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]])<span class="op">;</span> b_a <span class="op">=</span> np.array([<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>])</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>W_b <span class="op">=</span> np.array([[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>], [<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]])<span class="op">;</span> b_b <span class="op">=</span> np.array([<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">1.0</span>])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, (W, b, t) <span class="kw">in</span> <span class="bu">enumerate</span>([(W_a, b_a, <span class="st">"(a) one hexagon"</span>), (W_b, b_b, <span class="st">"(b) two hexagons"</span>)]):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> fig.add_subplot(<span class="dv">1</span>, <span class="dv">2</span>, k <span class="op">+</span> <span class="dv">1</span>, projection<span class="op">=</span><span class="st">"3d"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    draw_cube(ax, W, b, P123.numpy(), title<span class="op">=</span>t, show_codes<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-two-hexagons" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-two-hexagons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="retraining-boundaries_files/figure-html/fig-two-hexagons-output-1.png" width="614" height="307" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-two-hexagons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Corners coloured by <span class="math inline">\(P_{123}\)</span>. Thick red edges join corners of different <span class="math inline">\(P_{123}\)</span> and are cut by no plane. (a) One plane perpendicular to the body diagonal <span class="math inline">\([111]\)</span> cuts 6 of the 12 edges. (b) A second hexagonal plane, perpendicular to <span class="math inline">\([11\bar{1}]=(1,1,-1)\)</span>, leaves two edges along <span class="math inline">\(x_3\)</span> uncut. A third plane is needed.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="train-p123" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Show the code: training on P123 and listing the events</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>run123 <span class="op">=</span> train(P123)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch, corner, old, new, correct <span class="kw">in</span> events(run123, P123.numpy()):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"epoch </span><span class="sc">{</span>epoch<span class="sc">:5d}</span><span class="ss">: corner </span><span class="sc">{</span>corner<span class="sc">}</span><span class="ss">  code </span><span class="sc">{</span>old<span class="sc">}</span><span class="ss"> -&gt; </span><span class="sc">{</span>new<span class="sc">}</span><span class="ss">   output correct on </span><span class="sc">{</span>correct<span class="sc">}</span><span class="ss">/8"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>epoch   492: corner (-1, 1, -1)  code 100 -&gt; 000   output correct on 6/8
+epoch   492: corner (1, -1, -1)  code 100 -&gt; 000   output correct on 6/8
+epoch   746: corner (-1, 1, -1)  code 000 -&gt; 010   output correct on 6/8
+epoch   746: corner (1, -1, -1)  code 000 -&gt; 010   output correct on 6/8
+epoch  8997: corner (1, 1, -1)  code 110 -&gt; 111   output correct on 7/8
+epoch  8998: corner (-1, 1, -1)  code 010 -&gt; 011   output correct on 7/8
+epoch  8998: corner (1, -1, -1)  code 010 -&gt; 011   output correct on 7/8
+epoch  9000: corner (-1, -1, -1)  code 000 -&gt; 001   output correct on 8/8</code></pre>
+</div>
+</div>
+<p>At the start the network is correct on <span class="math inline">\(P_{123}\)</span> at the 4 corners with <span class="math inline">\(x_3=+1\)</span>, where <span class="math inline">\(P_{123}=P_{12}\)</span>. It is wrong at the 4 corners with <span class="math inline">\(x_3=-1\)</span>, where <span class="math inline">\(P_{123}=-P_{12}\)</span>. Nothing in the starting network depends on <span class="math inline">\(x_3\)</span>, so it cannot treat the two faces <span class="math inline">\(x_3=\pm1\)</span> differently. Retraining proceeds in three stages (<a href="#fig-p123-snapshots" class="quarto-xref">Figure&nbsp;5</a>).</p>
+<section id="stage-1-the-two-planes-turn-in-opposite-directions" class="level3">
+<h3 class="anchored" data-anchor-id="stage-1-the-two-planes-turn-in-opposite-directions">Stage 1: the two planes turn in opposite directions</h3>
+<p>The normal of plane 1 tilts towards <span class="math inline">\(+x_3\)</span>, and the normal of plane 2 tilts towards <span class="math inline">\(-x_3\)</span>. The planes now cut the faces <span class="math inline">\(x_3=+1\)</span> and <span class="math inline">\(x_3=-1\)</span> along different lines. Two events follow:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">epoch</th>
+<th style="text-align: center;">corners <span class="math inline">\((x_1,x_2,x_3)\)</span></th>
+<th style="text-align: center;">plane crossed</th>
+<th style="text-align: center;">code before <span class="math inline">\(\to\)</span> after</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">492</td>
+<td style="text-align: center;"><span class="math inline">\((-1,+1,-1)\)</span> and <span class="math inline">\((+1,-1,-1)\)</span></td>
+<td style="text-align: center;">leave the <code>on</code> side of plane 1</td>
+<td style="text-align: center;"><span class="math inline">\(100\to000\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">746</td>
+<td style="text-align: center;">the same two corners</td>
+<td style="text-align: center;">enter the <code>on</code> side of plane 2</td>
+<td style="text-align: center;"><span class="math inline">\(000\to010\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>After epoch 492 the network is correct at 6 of the 8 corners.</p>
+</section>
+<section id="stage-2-a-long-wait-for-a-third-plane" class="level3">
+<h3 class="anchored" data-anchor-id="stage-2-a-long-wait-for-a-third-plane">Stage 2: a long wait for a third plane</h3>
+<p>From epoch 746 to epoch 8997 no corner crosses any plane. Two edges along <span class="math inline">\(x_3\)</span> are uncut: the edge from <span class="math inline">\((-1,-1,-1)\)</span> to <span class="math inline">\((-1,-1,+1)\)</span>, whose ends share the code <span class="math inline">\(000\)</span>, and the edge from <span class="math inline">\((1,1,-1)\)</span> to <span class="math inline">\((1,1,+1)\)</span>, whose ends share the code <span class="math inline">\(110\)</span>. These are the two edges that two planes can never cut together (<a href="#fig-two-hexagons" class="quarto-xref">Figure&nbsp;4</a> b). The network needs a plane between the faces <span class="math inline">\(x_3=-1\)</span> and <span class="math inline">\(x_3=+1\)</span>.</p>
+<p>Unit 3 starts with zero input weights, so its plane is not defined: by <a href="#eq-plane" class="quarto-xref">Equation&nbsp;5</a> its distance <span class="math inline">\(|d_3|=|b_3|/|\vec{w}_3|\)</span> from the centre is infinite. During this stage <span class="math inline">\(\vec{w}_3\)</span> grows slowly from zero. Its plane exists from then on, but far outside the cube, and it moves towards the cube as <span class="math inline">\(|\vec{w}_3|\)</span> grows (<a href="#fig-p123-plane3" class="quarto-xref">Figure&nbsp;6</a>).</p>
+</section>
+<section id="stage-3-the-third-plane-arrives" class="level3">
+<h3 class="anchored" data-anchor-id="stage-3-the-third-plane-arrives">Stage 3: the third plane arrives</h3>
+<p>Near epoch 9000 the plane of unit 3 reaches the cube. It is nearly horizontal, with its normal pointing almost along <span class="math inline">\(-x_3\)</span>. It enters through the face <span class="math inline">\(x_3=-1\)</span> and sweeps the corners of that face onto its <code>on</code> side within three epochs:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">epoch</th>
+<th style="text-align: center;">corners <span class="math inline">\((x_1,x_2,x_3)\)</span></th>
+<th style="text-align: center;">code before <span class="math inline">\(\to\)</span> after</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8997</td>
+<td style="text-align: center;"><span class="math inline">\((+1,+1,-1)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(110\to111\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8998</td>
+<td style="text-align: center;"><span class="math inline">\((-1,+1,-1)\)</span> and <span class="math inline">\((+1,-1,-1)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(010\to011\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9000</td>
+<td style="text-align: center;"><span class="math inline">\((-1,-1,-1)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(000\to001\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>From epoch 9000 the network is correct at all 8 corners. The plane settles at <span class="math inline">\(x_3\approx-0.13\)</span>, between the two faces.</p>
+<div id="cell-fig-p123-snapshots" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="fl">2.6</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k, epoch <span class="kw">in</span> <span class="bu">enumerate</span>([<span class="dv">0</span>, <span class="dv">492</span>, <span class="dv">746</span>, <span class="dv">5000</span>, <span class="dv">9000</span>, <span class="dv">20000</span>]):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> fig.add_subplot(<span class="dv">1</span>, <span class="dv">6</span>, k <span class="op">+</span> <span class="dv">1</span>, projection<span class="op">=</span><span class="st">"3d"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    draw_cube(ax, run123[<span class="st">"W1"</span>][epoch], run123[<span class="st">"b1"</span>][epoch], P123.numpy(), title<span class="op">=</span><span class="ss">f"epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-p123-snapshots" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-p123-snapshots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="retraining-boundaries_files/figure-html/fig-p123-snapshots-output-1.png" width="1238" height="228" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-p123-snapshots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Retraining on <span class="math inline">\(P_{123}\)</span>, coloured by <span class="math inline">\(P_{123}\)</span>. From left: the start; the two events of stage 1 (epochs 492 and 746); the plateau of stage 2 (epoch 5000), with two uncut edges along <span class="math inline">\(x_3\)</span>; the end of stage 3 (epoch 9000), when the blue plane of unit 3 has entered between the faces; and the end of training.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-fig-p123-plane3" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>W3 <span class="op">=</span> run123[<span class="st">"W1"</span>][:, <span class="dv">2</span>, :]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>b3 <span class="op">=</span> run123[<span class="st">"b1"</span>][:, <span class="dv">2</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>norm3 <span class="op">=</span> np.linalg.norm(W3, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>ok <span class="op">=</span> norm3 <span class="op">&gt;</span> <span class="fl">1e-12</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> np.arange(<span class="bu">len</span>(W3))[ok]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.<span class="bu">abs</span>(b3[ok]) <span class="op">/</span> norm3[ok] <span class="op">/</span> (np.<span class="bu">abs</span>(W3[ok]).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">/</span> norm3[ok])</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.2</span>))</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>ax.plot(epochs, ratio, color<span class="op">=</span>UNIT_COLOURS[<span class="dv">2</span>])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="fl">1.0</span>, color<span class="op">=</span>GREY, ls<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">"log"</span>)<span class="op">;</span> ax.set_yscale(<span class="st">"log"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"epoch"</span>)<span class="op">;</span> ax.set_ylabel(<span class="vs">r"</span><span class="dv">$</span><span class="cf">|</span><span class="vs">d_3</span><span class="cf">|</span><span class="ch">\,</span><span class="vs">/</span><span class="ch">\,</span><span class="dv">\s</span><span class="vs">um_j</span><span class="cf">|</span><span class="er">\</span><span class="vs">hat{w}_{3j}</span><span class="cf">|</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-p123-plane3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-p123-plane3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="retraining-boundaries_files/figure-html/fig-p123-plane3-output-1.png" width="541" height="298" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-p123-plane3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Distance <span class="math inline">\(|d_3|\)</span> of the plane of unit 3 from the centre of the cube, divided by the largest distance at which this plane still cuts the cube, <span class="math inline">\(\sum_j|\hat{w}_{3j}|\)</span> (<a href="#eq-inside" class="quarto-xref">Equation&nbsp;6</a>). The plane is outside the cube above the dashed line and inside it below. It is undefined at epoch 0, where <span class="math inline">\(\vec{w}_3=0\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-final-arrangement" class="level3">
+<h3 class="anchored" data-anchor-id="the-final-arrangement">The final arrangement</h3>
+<p>At the end of training the three planes are:</p>
+<ul>
+<li>Plane 1 passes through the centre, with normal <span class="math inline">\((0.61,0.61,0.50)\)</span>, about <span class="math inline">\(5^\circ\)</span> from the body diagonal <span class="math inline">\((1,1,1)/\sqrt{3}\)</span>.</li>
+<li>Plane 2 passes through the centre, with normal <span class="math inline">\((0.61,0.61,-0.51)\)</span>, about <span class="math inline">\(5^\circ\)</span> from the body diagonal <span class="math inline">\((1,1,-1)/\sqrt{3}\)</span>.</li>
+<li>Plane 3 is nearly horizontal, at <span class="math inline">\(x_3\approx-0.13\)</span>.</li>
+</ul>
+<p>Planes 1 and 2 are close to the two hexagons of <a href="#fig-two-hexagons" class="quarto-xref">Figure&nbsp;4</a> (b), and plane 3 cuts the two edges they leave uncut. The output weights are <span class="math inline">\(\vec{w}^{(2)}=(9.30,\,-9.56,\,8.54)\)</span> and <span class="math inline">\(b^{(2)}=-4.01\)</span>. We check the output at every code:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">corners <span class="math inline">\((x_1,x_2,x_3)\)</span></th>
+<th style="text-align: center;">code</th>
+<th style="text-align: center;"><span class="math inline">\(\vec{w}^{(2)}\cdot\vec{h}+b^{(2)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y\)</span></th>
+<th style="text-align: center;">target <span class="math inline">\(y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\((-1,-1,+1)\)</span></td>
+<td style="text-align: center;">000</td>
+<td style="text-align: center;"><span class="math inline">\(-4.01\)</span></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\((-1,+1,+1)\)</span>, <span class="math inline">\((+1,-1,+1)\)</span></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;"><span class="math inline">\(9.30-4.01=5.29\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\((+1,+1,+1)\)</span></td>
+<td style="text-align: center;">110</td>
+<td style="text-align: center;"><span class="math inline">\(9.30-9.56-4.01=-4.27\)</span></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\((-1,-1,-1)\)</span></td>
+<td style="text-align: center;">001</td>
+<td style="text-align: center;"><span class="math inline">\(8.54-4.01=4.53\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\((-1,+1,-1)\)</span>, <span class="math inline">\((+1,-1,-1)\)</span></td>
+<td style="text-align: center;">011</td>
+<td style="text-align: center;"><span class="math inline">\(-9.56+8.54-4.01=-5.03\)</span></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\((+1,+1,-1)\)</span></td>
+<td style="text-align: center;">111</td>
+<td style="text-align: center;"><span class="math inline">\(9.30-9.56+8.54-4.01=4.27\)</span></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>This satisfies the task. The table also shows how the network computes <span class="math inline">\(P_{123}=P_{12}\,x_3\)</span>. On the face <span class="math inline">\(x_3=+1\)</span> (first three rows), planes 1 and 2 compute the old XOR pattern of <span class="math inline">\(P_{12}\)</span>. On the face <span class="math inline">\(x_3=-1\)</span> (last three rows), unit 3 is on and reverses the answer. The old planes have been turned and reused, and the new plane switches between the two faces.</p>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 35%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="math inline">\(P_{12}\to P_{23}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(P_{12}\to P_{123}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">planes needed by the new task</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">what happens to planes 1 and 2</td>
+<td style="text-align: center;">turn together by <span class="math inline">\(60^\circ\)</span></td>
+<td style="text-align: center;">turn in opposite directions, into two hexagons</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new plane built</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">yes, from the idle unit 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">events</td>
+<td style="text-align: center;">4 single-corner crossings, epochs 390–525</td>
+<td style="text-align: center;">2 crossings (492, 746), a plateau, then 3 crossings (8997–9000)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new task solved at epoch</td>
+<td style="text-align: center;">525</td>
+<td style="text-align: center;">9000</td>
+</tr>
+</tbody>
+</table>
+<p>The two retrainings show the two things a network can do with its decision boundaries when the task changes. When the new task needs no more planes than the old one, the network keeps its planes and gives them a new orientation. When the new task needs more planes, the network also turns its old planes and, in addition, builds a new one from an idle unit. In our run, building took about 17 times longer than turning alone. In both cases the old representation is taken apart, and the new one assembled, through a short list of events in which single corners cross single planes. While the turning of decision planes mirrors the feature rotation described by Masip et al. <span class="citation" data-cites="masip2026">(<a href="#ref-masip2026" role="doc-biblioref">Masip et al. 2026</a>)</span>, the birth of a new plane from an uncommitted unit represents a fundamentally different process. Because their framework fixes all features in advance, it cannot capture the dynamic creation of new decision boundaries.</p>
+<p>In a recent teacher-student model, a network learning a second task was shown to either re-use the hidden units specialised on the first task or activates unused ones <span class="citation" data-cites="lee2022">(<a href="#ref-lee2022" role="doc-biblioref">Lee et al. 2022</a>)</span>, provided the units have specialised <span class="citation" data-cites="jarvis2025">(<a href="#ref-jarvis2025" role="doc-biblioref">Jarvis et al. 2025</a>)</span>. Our starting network is fully specialised by construction: retraining on <span class="math inline">\(P_{23}\)</span> re-uses both units, while retraining on <span class="math inline">\(P_{123}\)</span> also activates the idle third unit. Our case differs from theirs in three ways, however. <em>First</em>, it gives an exact geometric picture of both responses. In the teacher-student model, re-use and activation are inferred from overlaps between student and teacher weights, averaged over high-dimensional Gaussian inputs. Here, re-use is seen as decision planes turning, activation is seen as a new plane entering the cube, and the whole process is a finite list of events in which a single corner crosses a single plane. <em>Second</em>, the activation of unit 3 is forced by the geometry of the cube, since two planes cannot solve <span class="math inline">\(P_{123}\)</span>, whereas in the teacher-student model activation is set by task similarity. <em>Third</em>, different parities are uncorrelated over the corners of the cube, so a single measure of task similarity does not distinguish <span class="math inline">\(P_{23}\)</span> from <span class="math inline">\(P_{123}\)</span>; what distinguishes them is the number of decision boundaries each one requires.</p>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-betley2025" class="csl-entry" role="listitem">
+<span class="nocase">Betley, Jan et al.</span> 2025. <span>“Emergent Misalignment: Narrow Finetuning Can Produce Broadly Misaligned LLMs.”</span> Preprint. <a href="https://arxiv.org/abs/2502.17424">https://arxiv.org/abs/2502.17424</a>.
+</div>
+<div id="ref-elhage2022" class="csl-entry" role="listitem">
+<span class="nocase">Elhage, Nelson et al.</span> 2022. <span>“Toy Models of Superposition.”</span> Preprint. <a href="https://arxiv.org/abs/2209.10652">https://arxiv.org/abs/2209.10652</a>.
+</div>
+<div id="ref-jarvis2025" class="csl-entry" role="listitem">
+Jarvis, Devon, Sebastian Lee, Clementine Domine, Andrew M. Saxe, and Stefano Sarao Mannelli. 2025. <span>“A Theory of Initialisation’s Impact on Specialisation.”</span> <em>Journal of Statistical Mechanics: Theory and Experiment</em> 2025: 114001. <a href="https://doi.org/10.1088/1742-5468/ae1214">https://doi.org/10.1088/1742-5468/ae1214</a>.
+</div>
+<div id="ref-kirkpatrick2017" class="csl-entry" role="listitem">
+<span class="nocase">Kirkpatrick, James et al.</span> 2017. <span>“Overcoming Catastrophic Forgetting in Neural Networks.”</span> <em>Proceedings of the National Academy of Sciences</em> 114: 3521–26.
+</div>
+<div id="ref-kumar2022" class="csl-entry" role="listitem">
+Kumar, Ananya, Aditi Raghunathan, Robbie Jones, Tengyu Ma, and Percy Liang. 2022. <span>“Fine-Tuning Can Distort Pretrained Features and Underperform Out-of-Distribution.”</span> <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://arxiv.org/abs/2202.10054">https://arxiv.org/abs/2202.10054</a>.
+</div>
+<div id="ref-lee2022" class="csl-entry" role="listitem">
+Lee, Sebastian, Stefano Sarao Mannelli, Claudia Clopath, Sebastian Goldt, and Andrew Saxe. 2022. <span>“Maslow’s Hammer in Catastrophic Forgetting: Node Re-Use Vs.&nbsp;Node Activation.”</span> <em>Proceedings of the 39th International Conference on Machine Learning, PMLR 162</em>, 12455–77. <a href="https://proceedings.mlr.press/v162/lee22g.html">https://proceedings.mlr.press/v162/lee22g.html</a>.
+</div>
+<div id="ref-lindsey2024" class="csl-entry" role="listitem">
+Lindsey, Jack, Adly Templeton, Jonathan Marcus, Thomas Conerly, Joshua Batson, and Christopher Olah. 2024. <span>“Sparse Crosscoders for Cross-Layer Features and Model Diffing.”</span> Transformer Circuits Thread. <a href="https://transformer-circuits.pub/2024/crosscoders/index.html">https://transformer-circuits.pub/2024/crosscoders/index.html</a>.
+</div>
+<div id="ref-masip2026" class="csl-entry" role="listitem">
+Masip, Sergi, Gido M. van de Ven, Javier Ferrando, and Tinne Tuytelaars. 2026. <span>“Putting a Face to Forgetting: Continual Learning Meets Mechanistic Interpretability.”</span> <em>Conference on Lifelong Learning Agents (CoLLAs)</em>. <a href="https://arxiv.org/abs/2601.22012">https://arxiv.org/abs/2601.22012</a>.
+</div>
+<div id="ref-minsky1969" class="csl-entry" role="listitem">
+Minsky, Marvin, and Seymour Papert. 1969. <em>Perceptrons: An Introduction to Computational Geometry</em>. MIT Press.
+</div>
+<div id="ref-oneil1971" class="csl-entry" role="listitem">
+O’Neil, Patrick E. 1971. <span>“Hyperplane Cuts of an n-Cube.”</span> <em>Discrete Mathematics</em> 1: 193–95.
+</div>
+<div id="ref-pratt1992" class="csl-entry" role="listitem">
+Pratt, Lorien Y. 1992. <span>“Discriminability-Based Transfer Between Neural Networks.”</span> <em>Advances in Neural Information Processing Systems 5</em>, 204–11. <a href="https://proceedings.neurips.cc/paper/1992/hash/67e103b0761e60683e83c559be18d40c-Abstract.html">https://proceedings.neurips.cc/paper/1992/hash/67e103b0761e60683e83c559be18d40c-Abstract.html</a>.
+</div>
+<div id="ref-saks1993" class="csl-entry" role="listitem">
+Saks, Michael E. 1993. <span>“Slicing the Hypercube.”</span> In <em>Surveys in Combinatorics, 1993</em>, edited by K. Walker. London Mathematical Society Lecture Note Series. Cambridge University Press.
+</div>
+</div>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Fine-tuning in machine learning usually implies using the weights of a pre-trained network as the initial weights for gradient training on a new task. This is entire different from how this term is used in physics.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>In a small network every internal quantity can be listed, and every possible configuration can be checked. The method then works like an exactly solvable model in physics: it shows clearly what can happen, and it can serve as a test case for tools built for larger systems.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The plane is defined as the set of all points/vectors <span class="math inline">\(\vec x\)</span> with the same projection (<span class="math inline">\(d_i\)</span>) on <span class="math inline">\(\hat w_i\)</span>. When the projection vanishes (i.e.&nbsp;<span class="math inline">\(d_i = 0\)</span>), it is straightforward to verify that <span class="math inline">\(\hat w_i\)</span> is normal to the plane.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Note that <span class="math inline">\(\partial_x \Theta(x) = \delta(x)\)</span>, the <em>Dirac delta-function</em>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>This is the <em>Fermi-Dirac distribution function</em> and <span class="math inline">\(\beta\)</span> can be interpreted as <em>inverse temperature</em>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Formally, <span class="math inline">\(\lim_{\beta \to \infty} \sigma_\beta(x) \to \Theta(x)\)</span>. Therefore, for sufficiently large <span class="math inline">\(\beta\)</span> the sigmoid and <span class="math inline">\(\Theta\)</span> classifiers are expected to agree on the geometric characterization we use here. For the moderate values of <span class="math inline">\(\beta\)</span> used in the numerical computations, one can always verify the agreement. We note that for small <span class="math inline">\(\beta\)</span> some discrepancy/ambiguities may exist.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/shouvik-s\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

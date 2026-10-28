@@ -2,7 +2,8 @@
   {
     "listing": "/notes.html",
     "items": [
-      "/notes/Boolean-circuits_MLP.qmd.html"
+      "/notes/retraining-boundaries.html",
+      "/notes/Boolean-circuits_MLP.html"
     ]
   }
 ]
