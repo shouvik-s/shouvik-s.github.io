@@ -1,6 +1,6 @@
 ---
 title: "Shouvik Sur"
-subtitle: "Theoretical Physicist"
+subtitle: "Theoretical & Computational Physicist"
 image: self.png
 about:
   template: solana

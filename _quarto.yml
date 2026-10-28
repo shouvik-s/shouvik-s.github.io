@@ -11,7 +11,7 @@ website:
       - href: research.qmd
         text: Research
       - href: notes.qmd
-        text: Ongoing Work
+        text: Notes
       - href: community-outreach.qmd
         text: Community & Outreach
 

@@ -1,5 +1,5 @@
 ---
-title: "Notes on Ongoing Work"
+title: "Notes on selected aspects of ongoing work"
 listing:
   contents: notes   # This is the command that accesses the "notes/" folder
   type: default     # Displays the notes as a standard blog-style list
