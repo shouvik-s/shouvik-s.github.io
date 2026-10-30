@@ -1,5 +1,6 @@
 ---
-title: "Folding by Depth: A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps"
+title: "Folding by Depth"
+description: "A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps"
 author:
   - name: Shouvik Sur
     orcid: 0000-0003-1261-3261
