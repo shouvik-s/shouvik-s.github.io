@@ -107,6 +107,10 @@ format:
     fig-cap-location: bottom
     tbl-cap-location: top
     link-external-newwindow: true
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true  
 ---
 
 ## Introduction
@@ -114,6 +118,7 @@ format:
 **Objective:** This exercise demonstrates the difference between the width and depth of a multi-layer perceptron (MLP) in controlling its ability to learn iterated maps that produce non-injective relationships. 
 
 **Outcome:** By contrasting the training of a shallow MLP (one hidden layer) and a deep MLP ($n$ hidden layers) on the $n$-fold iterated _tent map_, we show that depth attains the learning objective with the number of trainable parameters growing linearly in $n$, whereas the shallow network fails to train at any width up to 128 for $n \ge 4$ despite possessing more than sufficient representational capacity. Therefore, depth is the more efficient knob in two distinct ways: 
+
 1. it needs exponentially fewer parameters to *represent* the target (explicitly demonstrated by the parameter counts at $n = 2, 3$);
 2. it remains *trainable* in a regime where the width-matched shallow network is defeated by the vanishing gradients known for this function class. 
 
@@ -380,6 +385,7 @@ The shallow column is **identical by construction** — `ShallowMLP` has no nois
 
 
 ***The importance of the jitter:*** A comparison of the `gridMSE` reveals the impact of the depth-dependent jitter term,
+
 | n | code1 (fixed jitter) | code1a (`2^-n`) | ratio |
 |---|---|---|---|
 | 2 | 2.666e-11 | 3.416e-11 | — |
@@ -411,7 +417,7 @@ every depth.
 
 Away from its kink the tent map has slope $|f'(u)| = 2$. A small error $\delta$ in the state after the first hidden layer therefore passes through $n$ tent applications ($n - 1$ hidden layers and the output layer) and arrives at the output as $\approx 2^n \delta$. With parameter noise of standard deviation $\varepsilon$, $\delta \sim \varepsilon$, and the initial MSE is of order
 $$
-\mathrm{MSE}_{\rm init} \sim \left(2^n \varepsilon\right)^2 .
+\mathrm{MSE}_{\mathrm init} \sim \left(2^n \varepsilon\right)^2 .
 $$
 For `code1.py`, $\varepsilon = 10^{-2}$, this gives $1.6\times 10^{-3}$ at $n = 2$ and $2.6 \times 10^{-2}$ at $n = 4$, against the measured $5.9 \times 10^{-3}$ and $3.9 \times 10^{-2}$ in the table above. The estimate is low by a factor of a few, as expected since several perturbed parameters contribute. At $n = 6$ it gives $0.66$: the error is no longer small, the linear estimate breaks down, and the measured value saturates at $0.13$, above $\mathrm{Var}(y)$. For `code1a.py`, $\varepsilon = 10^{-2}\, 2^{-n}$, and the estimate becomes $\left(10^{-2}\right)^2 = 10^{-4}$ independently of $n$, which is the floor seen in the second column of the table above.
 :::

@@ -8,8 +8,9 @@
 
 <meta name="author" content="Shouvik Sur">
 <meta name="dcterms.date" content="2026-10-29">
+<meta name="description" content="A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps">
 
-<title>Folding by Depth: A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps – Shouvik Sur</title>
+<title>Folding by Depth – Shouvik Sur</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -227,16 +228,21 @@ window.Quarto = {
   <li><a href="#conclusion-and-discussion" id="toc-conclusion-and-discussion" class="nav-link" data-scroll-target="#conclusion-and-discussion"><span class="header-section-number">4</span> Conclusion and Discussion</a></li>
   <li><a href="#codebase" id="toc-codebase" class="nav-link" data-scroll-target="#codebase"><span class="header-section-number">5</span> Codebase</a></li>
   </ul>
-</nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="width-vs-depth.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Folding by Depth: A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps</h1>
+<h1 class="title">Folding by Depth</h1>
 </div>
 
+<div>
+  <div class="description">
+    A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -266,7 +272,11 @@ window.Quarto = {
 <section id="introduction" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <p><strong>Objective:</strong> This exercise demonstrates the difference between the width and depth of a multi-layer perceptron (MLP) in controlling its ability to learn iterated maps that produce non-injective relationships.</p>
-<p><strong>Outcome:</strong> By contrasting the training of a shallow MLP (one hidden layer) and a deep MLP (<span class="math inline">\(n\)</span> hidden layers) on the <span class="math inline">\(n\)</span>-fold iterated <em>tent map</em>, we show that depth attains the learning objective with the number of trainable parameters growing linearly in <span class="math inline">\(n\)</span>, whereas the shallow network fails to train at any width up to 128 for <span class="math inline">\(n \ge 4\)</span> despite possessing more than sufficient representational capacity. Therefore, depth is the more efficient knob in two distinct ways: 1. it needs exponentially fewer parameters to <em>represent</em> the target (explicitly demonstrated by the parameter counts at <span class="math inline">\(n = 2, 3\)</span>); 2. it remains <em>trainable</em> in a regime where the width-matched shallow network is defeated by the vanishing gradients known for this function class.</p>
+<p><strong>Outcome:</strong> By contrasting the training of a shallow MLP (one hidden layer) and a deep MLP (<span class="math inline">\(n\)</span> hidden layers) on the <span class="math inline">\(n\)</span>-fold iterated <em>tent map</em>, we show that depth attains the learning objective with the number of trainable parameters growing linearly in <span class="math inline">\(n\)</span>, whereas the shallow network fails to train at any width up to 128 for <span class="math inline">\(n \ge 4\)</span> despite possessing more than sufficient representational capacity. Therefore, depth is the more efficient knob in two distinct ways:</p>
+<ol type="1">
+<li>it needs exponentially fewer parameters to <em>represent</em> the target (explicitly demonstrated by the parameter counts at <span class="math inline">\(n = 2, 3\)</span>);</li>
+<li>it remains <em>trainable</em> in a regime where the width-matched shallow network is defeated by the vanishing gradients known for this function class.</li>
+</ol>
 <hr>
 </section>
 <section id="architectures" class="level2" data-number="2">
@@ -755,7 +765,61 @@ p(z) = \begin{cases} 1/4, &amp; |z| \leq 1, \\ 1/(4z^2), &amp; |z| &gt; 1, \end{
 <li><p>The accuracy of the learned representations is plotted below through the eyes of <code>gridMSE</code>. <img src="width-vs-depth_files/code1a_fig2_mse_vs_n.png" class="img-fluid" alt="Representation accuracy"></p></li>
 <li><p>The comparison of the degradation of the learned-approximator with <span class="math inline">\(n\)</span> between the shallow and deep MLPs is plotted below: <img src="width-vs-depth_files/code1a_fig3_functions.png" class="img-fluid" alt="Learned approximator"></p></li>
 </ul>
-<p><strong><em>The importance of the jitter:</em></strong> A comparison of the <code>gridMSE</code> reveals the impact of the depth-dependent jitter term, | n | code1 (fixed jitter) | code1a (<code>2^-n</code>) | ratio | |—|—|—|—| | 2 | 2.666e-11 | 3.416e-11 | — | | 3 | 5.409e-10 | 5.549e-10 | — | | 4 | 4.114e-08 | 2.776e-09 | 15x | | 5 | 3.001e-02 | 2.281e-07 | <strong>131,566x</strong> | | 6 | 5.564e-02 | 5.037e-02 | — | | 7 | 8.152e-02 | 8.337e-02 | — | | 8 | 8.338e-02 | 8.338e-02 | — |</p>
+<p><strong><em>The importance of the jitter:</em></strong> A comparison of the <code>gridMSE</code> reveals the impact of the depth-dependent jitter term,</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>n</th>
+<th>code1 (fixed jitter)</th>
+<th>code1a (<code>2^-n</code>)</th>
+<th>ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>2.666e-11</td>
+<td>3.416e-11</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>5.409e-10</td>
+<td>5.549e-10</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>4.114e-08</td>
+<td>2.776e-09</td>
+<td>15x</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>3.001e-02</td>
+<td>2.281e-07</td>
+<td><strong>131,566x</strong></td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>5.564e-02</td>
+<td>5.037e-02</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>8.152e-02</td>
+<td>8.337e-02</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>8.338e-02</td>
+<td>8.338e-02</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
 <p>We also note that the number of <code>pieces</code> at <span class="math inline">\(n=4\)</span> for the deep MLP has reduced from <span class="math inline">\(21 \to 19\)</span>.</p>
 <p><strong><em>Why the jitter works:</em></strong> Since each tent block has gain 2, a perturbation at the first fold is amplified by <code>2^n</code> at the output. A <em>fixed</em> jitter is therefore not a fixed perturbation; its effect doubles with every layer. Measured init grid-MSE at <code>w=2</code> (<code>0</code> = exact; <code>8.3e-2</code> = Var<span class="math inline">\((y)\)</span> baseline):</p>
 <table class="caption-top table">
@@ -803,7 +867,7 @@ p(z) = \begin{cases} 1/4, &amp; |z| \leq 1, \\ 1/(4z^2), &amp; |z| &gt; 1, \end{
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Away from its kink the tent map has slope <span class="math inline">\(|f'(u)| = 2\)</span>. A small error <span class="math inline">\(\delta\)</span> in the state after the first hidden layer therefore passes through <span class="math inline">\(n\)</span> tent applications (<span class="math inline">\(n - 1\)</span> hidden layers and the output layer) and arrives at the output as <span class="math inline">\(\approx 2^n \delta\)</span>. With parameter noise of standard deviation <span class="math inline">\(\varepsilon\)</span>, <span class="math inline">\(\delta \sim \varepsilon\)</span>, and the initial MSE is of order <span class="math display">\[
-\mathrm{MSE}_{\rm init} \sim \left(2^n \varepsilon\right)^2 .
+\mathrm{MSE}_{\mathrm init} \sim \left(2^n \varepsilon\right)^2 .
 \]</span> For <code>code1.py</code>, <span class="math inline">\(\varepsilon = 10^{-2}\)</span>, this gives <span class="math inline">\(1.6\times 10^{-3}\)</span> at <span class="math inline">\(n = 2\)</span> and <span class="math inline">\(2.6 \times 10^{-2}\)</span> at <span class="math inline">\(n = 4\)</span>, against the measured <span class="math inline">\(5.9 \times 10^{-3}\)</span> and <span class="math inline">\(3.9 \times 10^{-2}\)</span> in the table above. The estimate is low by a factor of a few, as expected since several perturbed parameters contribute. At <span class="math inline">\(n = 6\)</span> it gives <span class="math inline">\(0.66\)</span>: the error is no longer small, the linear estimate breaks down, and the measured value saturates at <span class="math inline">\(0.13\)</span>, above <span class="math inline">\(\mathrm{Var}(y)\)</span>. For <code>code1a.py</code>, <span class="math inline">\(\varepsilon = 10^{-2}\, 2^{-n}\)</span>, and the estimate becomes <span class="math inline">\(\left(10^{-2}\right)^2 = 10^{-4}\)</span> independently of <span class="math inline">\(n\)</span>, which is the floor seen in the second column of the table above.</p>
 </div>
 </div>
@@ -845,9 +909,7 @@ Telgarsky, Matus. 2016. <span>“Benefits of Depth in Neural Networks.”</span>
 </div>
 </div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@software{sur2026,
   author = {Sur, Shouvik},
-  title = {Folding by {Depth:} {A} {Hands-On} {Reproduction} of
-    {Width–Depth} {Separation} in {ReLU} {Networks} {Learning}
-    {Iterated} {Maps}},
+  title = {Folding by {Depth}},
   version = {v1.0.0},
   date = {2026-10-29},
   url = {https://github.com/shouvik-s/width-vs-depth},
@@ -855,9 +917,8 @@ Telgarsky, Matus. 2016. <span>“Benefits of Depth in Neural Networks.”</span>
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sur2026" class="csl-entry quarto-appendix-citeas" role="listitem">
-Sur, Shouvik. 2026. <em>Folding by Depth: A Hands-On Reproduction of
-Width–Depth Separation in ReLU Networks Learning Iterated Maps</em>. V.
-v1.0.0. Released October 29. <a href="https://doi.org/10.5281/zenodo.22801706">https://doi.org/10.5281/zenodo.22801706</a>.
+Sur, Shouvik. 2026. <em>Folding by Depth</em>. V. v1.0.0. Released
+October 29. <a href="https://doi.org/10.5281/zenodo.22801706">https://doi.org/10.5281/zenodo.22801706</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -932,7 +993,7 @@ v1.0.0. Released October 29. <a href="https://doi.org/10.5281/zenodo.22801706">h
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/shouvik-s\.github\.io\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
