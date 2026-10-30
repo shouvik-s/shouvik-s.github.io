@@ -12,5 +12,17 @@
   "notes/Boolean-circuits_MLP.qmd": {
     "Boolean-circuits_MLP.html": "e5c9edcb",
     "Boolean-circuits_MLP.tex": "4da8705a"
+  },
+  "research.qmd": {
+    "research.html": "c8f66db5"
+  },
+  "about.qmd": {
+    "about.html": "450e34f7"
+  },
+  "community-outreach.qmd": {
+    "community-outreach.html": "e37af7a0"
+  },
+  "notes/width-vs-depth.qmd": {
+    "width-vs-depth.html": "70c3b49b"
   }
 }

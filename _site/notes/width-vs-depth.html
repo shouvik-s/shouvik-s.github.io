@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Shouvik Sur">
+<meta name="dcterms.date" content="2026-10-29">
+
+<title>Folding by Depth: A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps – Shouvik Sur</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-282abdd4a580632c052b6858c0510cd2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Shouvik Sur</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../research.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../community-outreach.html"> 
+<span class="menu-text">Community &amp; Outreach</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#architectures" id="toc-architectures" class="nav-link" data-scroll-target="#architectures"><span class="header-section-number">2</span> Architectures</a>
+  <ul class="collapse">
+  <li><a href="#two-types-of-mlps" id="toc-two-types-of-mlps" class="nav-link" data-scroll-target="#two-types-of-mlps"><span class="header-section-number">2.1</span> Two types of MLPs</a></li>
+  <li><a href="#initial-weights" id="toc-initial-weights" class="nav-link" data-scroll-target="#initial-weights"><span class="header-section-number">2.2</span> Initial weights</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#code0.py-the-random-initialization" id="toc-code0.py-the-random-initialization" class="nav-link" data-scroll-target="#code0.py-the-random-initialization"><span class="header-section-number">3.1</span> code0.py — the random initialization</a></li>
+  <li><a href="#code1.py-deterministic-inits" id="toc-code1.py-deterministic-inits" class="nav-link" data-scroll-target="#code1.py-deterministic-inits"><span class="header-section-number">3.2</span> code1.py — deterministic inits</a></li>
+  <li><a href="#code1a.py-the-depth-dependent-jitter" id="toc-code1a.py-the-depth-dependent-jitter" class="nav-link" data-scroll-target="#code1a.py-the-depth-dependent-jitter"><span class="header-section-number">3.3</span> code1a.py — the depth-dependent “jitter”</a></li>
+  </ul></li>
+  <li><a href="#conclusion-and-discussion" id="toc-conclusion-and-discussion" class="nav-link" data-scroll-target="#conclusion-and-discussion"><span class="header-section-number">4</span> Conclusion and Discussion</a></li>
+  <li><a href="#codebase" id="toc-codebase" class="nav-link" data-scroll-target="#codebase"><span class="header-section-number">5</span> Codebase</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Folding by Depth: A Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Shouvik Sur <a href="https://orcid.org/0000-0003-1261-3261" class="quarto-title-author-orcid" aria-label="ORCID profile for Shouvik Sur"> <img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 29, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p><strong>Objective:</strong> This exercise demonstrates the difference between the width and depth of a multi-layer perceptron (MLP) in controlling its ability to learn iterated maps that produce non-injective relationships.</p>
+<p><strong>Outcome:</strong> By contrasting the training of a shallow MLP (one hidden layer) and a deep MLP (<span class="math inline">\(n\)</span> hidden layers) on the <span class="math inline">\(n\)</span>-fold iterated <em>tent map</em>, we show that depth attains the learning objective with the number of trainable parameters growing linearly in <span class="math inline">\(n\)</span>, whereas the shallow network fails to train at any width up to 128 for <span class="math inline">\(n \ge 4\)</span> despite possessing more than sufficient representational capacity. Therefore, depth is the more efficient knob in two distinct ways: 1. it needs exponentially fewer parameters to <em>represent</em> the target (explicitly demonstrated by the parameter counts at <span class="math inline">\(n = 2, 3\)</span>); 2. it remains <em>trainable</em> in a regime where the width-matched shallow network is defeated by the vanishing gradients known for this function class.</p>
+<hr>
+</section>
+<section id="architectures" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="architectures"><span class="header-section-number">2</span> Architectures</h2>
+<p><strong>The Map:</strong> The tent-map <span class="math inline">\(f: [0,1] \to [0,1]\)</span> is given by <span id="eq-tent"><span class="math display">\[
+f(x) = 1 - |1 - 2x|.
+\tag{1}\]</span></span> Thus, it is a <span class="math inline">\(2\)</span>-to-<span class="math inline">\(1\)</span> map. Iterating it <span class="math inline">\(n\)</span> times converts it to a <span class="math inline">\(2^n\)</span>-to-<span class="math inline">\(1\)</span> map, <span id="eq-tent-n"><span class="math display">\[
+f_n(x) = 1 - |(2^n x \; \text{mod} \; 2) - 1|
+\tag{2}\]</span></span> while preserving the definition of the domain and range.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Worked check: why <span class="math inline">\(\mathrm{Var}(y) = 1/12\)</span> at every <span class="math inline">\(n\)</span>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(x\)</span> be uniform on <span class="math inline">\([0,1]\)</span>. Each of the <span class="math inline">\(2^n\)</span> linear pieces of <span class="math inline">\(f_n\)</span> maps an interval of length <span class="math inline">\(2^{-n}\)</span> linearly onto the whole of <span class="math inline">\([0,1]\)</span>. Conditioned on <span class="math inline">\(x\)</span> falling in a given piece, <span class="math inline">\(y = f_n(x)\)</span> is therefore uniform on <span class="math inline">\([0,1]\)</span>, and so is <span class="math inline">\(y\)</span> unconditionally. A uniform variable on <span class="math inline">\([0,1]\)</span> has mean <span class="math inline">\(1/2\)</span> and variance <span class="math display">\[
+\int_0^1 \left(y - \tfrac12\right)^2 dy = \frac{1}{12} \approx 8.33\times 10^{-2},
+\]</span> independent of <span class="math inline">\(n\)</span>. A network that has collapsed to the constant <span class="math inline">\(1/2\)</span> scores exactly this MSE, and such a network has one linear piece. This is the signature “<code>8.33e-02</code>, <code>pieces = 1</code>” that appears in the failed rows of the tables below.</p>
+</div>
+</div>
+</div>
+<section id="two-types-of-mlps" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="two-types-of-mlps"><span class="header-section-number">2.1</span> Two types of MLPs</h3>
+<p><strong>Shallow MLP:</strong> The shallow MLP contains one hidden layer of width <span class="math inline">\(w\)</span>. It can be shown by information theoretic arguments that in order for this network to represent <span class="math inline">\(f_n\)</span>, the number of nodes/neurons <span class="math inline">\(w \geq 2^n-1\)</span>. This leads to an exponential scaling of the number of trainable parameters in the shallow MLP with <span class="math inline">\(n\)</span>.</p>
+<p><strong>Deep MLP:</strong> The deep MLP contains <span class="math inline">\(N\)</span> hidden layers, each of width <span class="math inline">\(w\)</span>. It can be shown by the same type of arguments as above that if <span class="math inline">\(N \sim n\)</span>, then <span class="math inline">\(w = \mathcal{O}(1)\)</span>. Therefore, the number of trainable parameters in the deep MLP scales <em>linearly</em> with <span class="math inline">\(n\)</span>. Here, in order to easily contrast the deep-MLP with its shallow counterpart, we will fix <span class="math inline">\(w=2\)</span> in the former.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Worked count: why the shallow network needs <span class="math inline">\(w \geq 2^n\)</span> units
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>On <span class="math inline">\([0,1]\)</span> the shallow network computes <span class="math display">\[
+\phi(x) = c + \sum_{j=1}^{w} s_j\, \sigma(W_j x + b_j),
+\]</span> where <span class="math inline">\(\sigma\)</span> is the ReLU, <span class="math inline">\(W_j\)</span> and <span class="math inline">\(b_j\)</span> are the hidden weight and bias of unit <span class="math inline">\(j\)</span>, <span class="math inline">\(s_j\)</span> its output weight, and <span class="math inline">\(c\)</span> the output bias. Unit <span class="math inline">\(j\)</span> is linear over <span class="math inline">\([0,1]\)</span> unless its hinge <span class="math inline">\(a_j = -b_j/W_j\)</span> lies inside the interval. At <span class="math inline">\(a_j\)</span> it changes the slope of <span class="math inline">\(\phi\)</span> by <span class="math inline">\(J_j = s_j |W_j|\)</span>, whether it is right-active (<span class="math inline">\(W_j &gt; 0\)</span>, zero to the left of <span class="math inline">\(a_j\)</span>) or left-active (<span class="math inline">\(W_j &lt; 0\)</span>, zero to the right of <span class="math inline">\(a_j\)</span>).</p>
+<p>The target <span class="math inline">\(f_n\)</span> has <span class="math inline">\(2^n - 1\)</span> interior kinks at <span class="math inline">\(x = m/2^n\)</span>, <span class="math inline">\(m = 1, \dots, 2^n - 1\)</span>, and at each kink its slope flips between <span class="math inline">\(+2^n\)</span> and <span class="math inline">\(-2^n\)</span>, i.e.&nbsp;jumps by <span class="math inline">\(\pm 2^{n+1}\)</span>. Each unit supplies at most one kink, so <span class="math inline">\(w \geq 2^n - 1\)</span>. This is the bound quoted above.</p>
+<p>This bound cannot be attained. Suppose <span class="math inline">\(w = 2^n - 1\)</span>. Then every unit must sit on its own kink and carry that kink’s jump, <span class="math inline">\(J_j = \pm 2^{n+1}\)</span>. On the first piece, <span class="math inline">\(0 \leq x &lt; 2^{-n}\)</span>, the right-active units are all zero, and each left-active unit contributes the slope <span class="math inline">\(-J_j\)</span>. The slope of <span class="math inline">\(\phi\)</span> there is therefore <span class="math inline">\(-\sum_{j \in L} J_j\)</span>, where <span class="math inline">\(L\)</span> is the set of left-active units. This sum is an integer multiple of <span class="math inline">\(2^{n+1}\)</span>, so it can never equal the required slope <span class="math inline">\(2^n\)</span>. One more unit is necessary, and <span class="math inline">\(w \geq 2^n\)</span>.</p>
+<p>The bound <span class="math inline">\(w = 2^n\)</span> is attained by putting the extra hinge at <span class="math inline">\(x = 0\)</span>: <span class="math display">\[
+f_n(x) = 2^n \sigma(x) + \sum_{m=1}^{2^n-1} (-1)^m\, 2^{n+1}\, \sigma\!\left(x - \frac{m}{2^n}\right), \qquad x \in [0,1].
+\]</span> The sign <span class="math inline">\((-1)^m\)</span> makes the slope fall by <span class="math inline">\(2^{n+1}\)</span> at the peaks (<span class="math inline">\(m\)</span> odd) and rise by <span class="math inline">\(2^{n+1}\)</span> at the valleys (<span class="math inline">\(m\)</span> even). For <span class="math inline">\(n = 1\)</span> this reads <span class="math inline">\(f(x) = 2\sigma(x) - 4\sigma(x - 1/2)\)</span>, which is exactly the tent block wired into every layer of the deep network below. The measured minimum width at <span class="math inline">\(n = 2\)</span> in the <code>code1.py</code> table is <span class="math inline">\(w = 4 = 2^2\)</span>, in agreement with the bound.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="initial-weights" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="initial-weights"><span class="header-section-number">2.2</span> Initial weights</h3>
+<p>While the <span class="math inline">\(n\)</span>-scaling of the number of parameters in the two MLPs can be determined <em>a priori</em>, a successful training of these networks crucially depends on the choice of the initial weights. This is demonstrated by <code>code0.py</code>. This script contains a straightforward comparison between the two types of MLP architectures discussed above with the initial weights in both networks assigned randomly. We find that * the deep MLP fails to train with the test accuracy hovering around the variance in the input data; * the shallow MLP trains only at a few select widths, depending on the seed fed to the random number generator.</p>
+<p><strong>The Problem:</strong> The main challenge here is to use the ReLU network to represent a piecewise continuous function with many segments (controlled by <span class="math inline">\(n\)</span>). In order for a ReLU-based approximator, <span class="math inline">\(\phi(x) = s_0 x + \sum_j s_j \sigma(x - a_j)\)</span> with <span class="math inline">\(\sigma(x)\)</span> being the ReLU function, to be sensitive to the segmentations in <span class="math inline">\(f_n(x)\)</span>, it must possess a sufficient number of ReLU-hinges or breakpoints within the interval <span class="math inline">\(x \in [0,1]\)</span>. The naive random initialization of the networks prevents this from happening: if both the weight (<span class="math inline">\(W_j\)</span>) and the bias (<span class="math inline">\(b_j\)</span>) acting on the <span class="math inline">\(j\)</span>-th node/neuron is sampled from a uniform distribution, then the location where <span class="math inline">\((W_j x + b_j)\)</span> vanishes, <span class="math inline">\(x=-b_j/W_j\)</span>, typically lies outside <span class="math inline">\([0,1]\)</span>. The “naive” algorithm in <code>code0.py</code> fails because of this reason.</p>
+<p><strong>Solution-Part 1:</strong> To fix this issue, in <code>code1.py</code>, we deterministically assign the initial weights and biases in such a way that all the breakpoints of <span class="math inline">\(\phi(x)\)</span> lie within <span class="math inline">\([0,1]\)</span>. In fact, to help the gradient descent find the desired solution, we initiate the network weights and biases in the vicinity of the expected solution as follows.</p>
+<ul>
+<li><em>Shallow MLP</em>: We initialize as</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> torch.linspace(<span class="fl">0.0</span>, <span class="fl">1.0</span>, w <span class="op">+</span> <span class="dv">2</span>)[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>]                 </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sign <span class="op">=</span> torch.where(torch.arange(w) <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span>, <span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> sign</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">0</span>].weight.copy_(W.unsqueeze(<span class="dv">1</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">0</span>].bias.copy_(<span class="op">-</span>W <span class="op">*</span> k)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">2</span>].weight.normal_(<span class="fl">0.0</span>, <span class="fl">1.0</span> <span class="op">/</span> <span class="bu">max</span>(w, <span class="dv">1</span>) <span class="op">**</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">2</span>].bias.zero_()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Here, <code>k = torch.linspace(0.0, 1.0, w + 2)[1:-1]</code> creates an evenly spaced grid of <span class="math inline">\(w+2\)</span> points from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>, and then slices off the boundaries (<code>1:-1</code> removes the <span class="math inline">\(0.0\)</span> and <span class="math inline">\(1.0\)</span>). These are the target breakpoint locations <span class="math inline">\(a_j\)</span> for the <span class="math inline">\(w\)</span> hidden units. They are guaranteed to be strictly inside the domain. The subsequent lines,</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sign <span class="op">=</span> torch.where(torch.arange(w) <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span>, <span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> sign</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">0</span>].weight.copy_(W.unsqueeze(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>generates a weight vector <span class="math inline">\(\mathbf{W}\)</span> of <span class="math inline">\([+2.0, -2.0, +2.0, -2.0, ...]\)</span>. Note that the sign of <span class="math inline">\(W_j\)</span> determines the direction of the ReLU: <span class="math inline">\(\sigma(2x + b_j)\)</span> are “right-active”; <span class="math inline">\(\sigma(-2x + b_j)\)</span> are left-active. By alternating them, the network gets a perfectly balanced basis of features—half looking right, half looking left—which prevents a massive, lopsided accumulation of slopes.</p>
+<p>The next line, <code>self.layers[0].bias.copy_(-W * k)</code>, assigns the biases such that the kink/break-point of every unit <span class="math inline">\(j\)</span> locates exactly on the grid point <span class="math inline">\(k_j\)</span>.</p>
+<p>Finally,</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">2</span>].weight.normal_(<span class="fl">0.0</span>, <span class="fl">1.0</span> <span class="op">/</span> <span class="bu">max</span>(w, <span class="dv">1</span>) <span class="op">**</span> <span class="fl">0.5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.layers[<span class="dv">2</span>].bias.zero_()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>initializes the output layer with standard random weights drawn from a Normal distribution with variance <span class="math inline">\(1/w\)</span>.</p>
+<p>In summary, <em>the deterministic initialization of the weights and biases of the hidden layer ensures that 100% of the network’s structural capacity (the <span class="math inline">\(w\)</span> hinges) is optimally distributed inside the active domain, leaving the output layer to figure out exactly how to linearly combine these perfectly placed basis functions.</em></p>
+<ul>
+<li><em>Deep MLP</em>: We implement the same strategy for the deep MLP. We only focus on the first two nodes/neurons of each hidden layer. Because we will fix the width <span class="math inline">\(w=2\)</span> for all hidden layers this is sufficient. This strategy also works unchanged for <span class="math inline">\(w &gt; 2\)</span> because of the structure of the iterated tent-map (it only grows as <span class="math inline">\(2^n \Rightarrow\)</span> two assignment changes per layer is sufficient).</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.weight.zero_()<span class="op">;</span> <span class="va">self</span>.first_hidden.bias.zero_()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.weight[<span class="dv">0</span>, <span class="dv">0</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.weight[<span class="dv">1</span>, <span class="dv">0</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.bias[<span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> layer <span class="kw">in</span> <span class="va">self</span>.rest_hidden:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    layer.weight.zero_()<span class="op">;</span> layer.bias.zero_()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    layer.weight[:<span class="dv">2</span>, :<span class="dv">2</span>] <span class="op">=</span> torch.tensor([[<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">4.0</span>], [<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">4.0</span>]])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    layer.bias[:<span class="dv">2</span>] <span class="op">=</span> torch.tensor([<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.5</span>])</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.out.weight.zero_()<span class="op">;</span> <span class="va">self</span>.out.bias.zero_()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.out.weight[<span class="dv">0</span>, :<span class="dv">2</span>] <span class="op">=</span> torch.tensor([<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">4.0</span>])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> <span class="va">self</span>.parameters():</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    p.add_(noise <span class="op">*</span> torch.randn_like(p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a deep network to repeatedly fold the input, each layer needs a specific two-component signal. The first hidden layer translates the raw scalar input <span class="math inline">\(x\)</span> into this format:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.weight.zero_()<span class="op">;</span> <span class="va">self</span>.first_hidden.bias.zero_()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.weight[<span class="dv">0</span>, <span class="dv">0</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.weight[<span class="dv">1</span>, <span class="dv">0</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.first_hidden.bias[<span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Unit <span class="math inline">\(0\)</span> gets <span class="math inline">\(W=1, b=0 \implies \sigma(x)\)</span>. Since <span class="math inline">\(x \in [0,1]\)</span>, this simply passes <span class="math inline">\(x\)</span> forward. Unit 1 gets <span class="math inline">\(W=1, b=-0.5 \implies \sigma(x - 0.5)\)</span>. This is the shifted component. The output of the first layer is the 2D state vector: <span class="math inline">\(\mathbf{u} = \big(x, \sigma(x - 0.5)\big)^T\)</span>.</p>
+<p>The rest of the hidden layers are initialized iteratively such that they preserve the same structure of the output of first hidden layer:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> layer <span class="kw">in</span> <span class="va">self</span>.rest_hidden:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    layer.weight.zero_()<span class="op">;</span> layer.bias.zero_()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    layer.weight[:<span class="dv">2</span>, :<span class="dv">2</span>] <span class="op">=</span> torch.tensor([[<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">4.0</span>], [<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">4.0</span>]])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    layer.bias[:<span class="dv">2</span>] <span class="op">=</span> torch.tensor([<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.5</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It takes the two-component vector <span class="math inline">\(\mathbf{u}\)</span> from the previous layer and applies the tent function: <span class="math inline">\(f(u) = 2\sigma(u) - 4\sigma(u - 0.5)\)</span>. Notice that both rows of the weight matrix are identical: <span class="math inline">\([2.0, -4.0]\)</span>. Row <span class="math inline">\(0\)</span> computes: <span class="math inline">\(2u_0 - 4u_1\)</span>. Because <span class="math inline">\(\mathbf{u} = \big(x, \sigma(x-0.5)\big)\)</span>, this exactly evaluates <span class="math inline">\(f(x)\)</span>. After the ReLU, it remains <span class="math inline">\(f(x)\)</span> because the tent function is strictly non-negative. Row 1 computes: <span class="math inline">\(2u_0 - 4u_1 - 0.5\)</span>. This evaluates <span class="math inline">\(f(x) - 0.5\)</span>. After the ReLU, it becomes <span class="math inline">\(\sigma(f(x) - 0.5)\)</span>. Therefore, the output state of this layer: <span class="math inline">\(\big(f(x), \sigma(f(x) - 0.5)\big)^T\)</span>. <em>It is the exact same format as the input state</em>, just with <span class="math inline">\(x\)</span> replaced by <span class="math inline">\(f(x)\)</span>. Because the state shape is preserved, we can stack as many of these identically wired layers as we want. Each layer folds the space in half, doubling the number of teeth in the sawtooth approximator of <span class="math inline">\(f_n\)</span>.</p>
+<p>The output layer collapses the 2D state back down to a scalar output,</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.out.weight.zero_()<span class="op">;</span> <span class="va">self</span>.out.bias.zero_()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="va">self</span>.out.weight[<span class="dv">0</span>, :<span class="dv">2</span>] <span class="op">=</span> torch.tensor([<span class="fl">2.0</span>, <span class="op">-</span><span class="fl">4.0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>By applying weights <span class="math inline">\([2.0, -4.0]\)</span> and a zero-bias, it executes one final tent function <span class="math inline">\(f(\cdot)\)</span> on the state from the last hidden layer, yielding the final highly oscillatory output <span class="math inline">\(y\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Pen-and-paper check of the fold at <span class="math inline">\(n = 2\)</span>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>At <span class="math inline">\(n = 2\)</span> the network has the first hidden layer, one layer in <code>rest_hidden</code>, and the output layer. Take <span class="math inline">\(x = 0.3\)</span>:</p>
+<ol type="1">
+<li>First hidden layer: <span class="math inline">\(\mathbf{u} = \big(\sigma(0.3), \sigma(0.3 - 0.5)\big) = (0.3, 0)\)</span>.</li>
+<li>Hidden layer: row 0 gives <span class="math inline">\(\sigma(2\cdot 0.3 - 4\cdot 0) = 0.6\)</span>, row 1 gives <span class="math inline">\(\sigma(0.6 - 0.5) = 0.1\)</span>, so <span class="math inline">\(\mathbf{u} = (0.6, 0.1)\)</span>. This is <span class="math inline">\(\big(f(0.3), \sigma(f(0.3) - 0.5)\big)\)</span>, as claimed.</li>
+<li>Output layer: <span class="math inline">\(y = 2\cdot 0.6 - 4 \cdot 0.1 = 0.8\)</span>.</li>
+</ol>
+<p>From <a href="#eq-tent-n" class="quarto-xref">Equation&nbsp;2</a>, <span class="math inline">\(2^2 \cdot 0.3 = 1.2\)</span>, <span class="math inline">\(1.2 \bmod 2 = 1.2\)</span>, and <span class="math inline">\(f_2(0.3) = 1 - |1.2 - 1| = 0.8\)</span>. The two agree.</p>
+<p>Take <span class="math inline">\(x = 0.7\)</span>, the mirror image of <span class="math inline">\(0.3\)</span> on the other side of the first fold:</p>
+<ol type="1">
+<li>First hidden layer: <span class="math inline">\(\mathbf{u} = (0.7, 0.2)\)</span>.</li>
+<li>Hidden layer: row 0 gives <span class="math inline">\(\sigma(1.4 - 0.8) = 0.6\)</span>, row 1 gives <span class="math inline">\(\sigma(0.6 - 0.5) = 0.1\)</span>, so <span class="math inline">\(\mathbf{u} = (0.6, 0.1)\)</span>.</li>
+<li>Output layer: <span class="math inline">\(y = 0.8\)</span>.</li>
+</ol>
+<p>From <a href="#eq-tent-n" class="quarto-xref">Equation&nbsp;2</a>, <span class="math inline">\(2.8 \bmod 2 = 0.8\)</span> and <span class="math inline">\(f_2(0.7) = 1 - |0.8 - 1| = 0.8\)</span>. After the first fold the inputs <span class="math inline">\(x = 0.3\)</span> and <span class="math inline">\(x = 0.7\)</span> have become the same state <span class="math inline">\((0.6, 0.1)\)</span>, and nothing downstream can tell them apart. This is the non-injectivity being built up layer by layer: every fold identifies pairs of points, so <span class="math inline">\(n\)</span> folds map <span class="math inline">\(2^n\)</span> inputs onto each output value.</p>
+</div>
+</div>
+</div>
+<p>Finally, we add a perturbation to the pristine initialization in the previous steps to help the gradient descent</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> <span class="va">self</span>.parameters():</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    p.add_(noise <span class="op">*</span> torch.randn_like(p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This serves two practical purposes, (1) it provides a degree of robustness to the <code>Adam</code> based optimizer by giving it some room to optimize, especially while working under the restriction of two-nodes-per-hidden-layer (<span class="math inline">\(w=2\)</span>) [this is the reason behind <code>code1a.py</code>’s existence]; (2) it gives a sense of the basin of attraction of the putative fixed point characterized by the pristine initialization. As we shall see, the converged results do not exactly match the theoretical expectations with the number of segments required for the MLP-approximator generally exceeding the theoretical sufficient-minimum.</p>
+<p><strong>Solution-Part 2:</strong> Although <code>code1.py</code> offers a vast improvement over <code>code0.py</code> it still fails to produce a sufficiently quick convergence for <span class="math inline">\(n\geq 5\)</span>. To improve upon this deficiency we make a small change to initialization of the output layer of <code>code1.py</code> by giving it a depth-sensitive “jitter” by the following change:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode diff code-with-copy"><code class="sourceCode diff"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="st">-                    p.add_(noise * torch.randn_like(p))</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="va">+                    p.add_(noise * 2.0 ** -n * torch.randn_like(p))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This improves the convergence, benchmarked as follows.</p>
+</section>
+</section>
+<section id="results" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="results"><span class="header-section-number">3</span> Results</h2>
+<p>All three scored identically: dense grid <code>linspace(0,1,20001)</code>, sup-norm, and a piece counter (second-difference kinks) compared against <code>2^n</code>. The width of each hidden layer of the deep MLP is pinned at <code>w=2</code>; the shallow MLP’s width is swept over <code>w in {2,4,8,16,32,64,128}</code>, so <code>w &gt; 128</code> means no width in that range reached within a tolerance of <code>tol = 1e-3</code>.</p>
+<section id="code0.py-the-random-initialization" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="code0.py-the-random-initialization"><span class="header-section-number">3.1</span> code0.py — the random initialization</h3>
+<p><code>lr=1e-3</code>, full batch, 20000 epochs, <strong>1 seed</strong>, default <code>nn.Linear</code> init.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>n</th>
+<th>shallow min w</th>
+<th>params</th>
+<th>gridMSE</th>
+<th>deep w=2</th>
+<th>gridMSE</th>
+<th>pieces</th>
+<th>2^n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>8</td>
+<td>25</td>
+<td>1.56e-09</td>
+<td>fail</td>
+<td>8.336e-02</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>16</td>
+<td>49</td>
+<td>2.28e-10</td>
+<td>fail</td>
+<td>8.335e-02</td>
+<td>1</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>128</td>
+<td>385</td>
+<td>9.91e-07</td>
+<td>fail</td>
+<td>8.338e-02</td>
+<td>1</td>
+<td>16</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>3.92e-02</td>
+<td>fail</td>
+<td>8.339e-02</td>
+<td>1</td>
+<td>32</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>7.93e-02</td>
+<td>fail</td>
+<td>8.338e-02</td>
+<td>1</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.44e-02</td>
+<td>fail</td>
+<td>8.340e-02</td>
+<td>1</td>
+<td>128</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.49e-02</td>
+<td>fail</td>
+<td>8.341e-02</td>
+<td>1</td>
+<td>256</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The deep network does not work at any depth.</strong> <code>8.33e-02</code> is <code>Var(y) = 1/12</code>, the best-fit constant through the dataset, and <code>pieces = 1</code> confirms that the model is a flat line.</p>
+<p><strong>The shallow network’s performance is a lottery, with no discernible trend visible.</strong> Sweep at <code>n=3</code>:</p>
+<pre><code>w=  2  8.185e-02     w= 16  2.202e-10  &lt;- succeeds
+w=  4  8.196e-02     w= 32  5.185e-02  &lt;- fails
+w=  8  6.520e-02     w= 64  6.515e-09  &lt;- succeeds
+                     w=128  2.477e-09  &lt;- succeeds</code></pre>
+<p>Whether a given width works is decided by how many ReLU-hinges happen to land within <span class="math inline">\([0,1]\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Worked estimate: how many hinges land inside the window
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For a layer with one input, the default <code>nn.Linear</code> initialization draws <span class="math inline">\(W_j\)</span> and <span class="math inline">\(b_j\)</span> independently and uniformly from <span class="math inline">\([-1, 1]\)</span>. The hinge <span class="math inline">\(z_j = -b_j/W_j\)</span> then has the density <span class="math display">\[
+p(z) = \begin{cases} 1/4, &amp; |z| \leq 1, \\ 1/(4z^2), &amp; |z| &gt; 1, \end{cases}
+\]</span> which follows from <span class="math inline">\(P(|z| \leq c) = P(|b| \leq c|W|) = c/2\)</span> for <span class="math inline">\(c \leq 1\)</span> and <span class="math inline">\(P(|z| &gt; c) = P(|W| &lt; |b|/c) = 1/(2c)\)</span> for <span class="math inline">\(c \geq 1\)</span>. The tail falls off as <span class="math inline">\(1/z^2\)</span>, as for a Cauchy distribution.</p>
+<p><code>code0.py</code> feeds the network inputs on <span class="math inline">\([-1, 1]\)</span> (it maps <span class="math inline">\(x \to 2x - 1\)</span>), so each hinge lands inside the input window with probability <span class="math inline">\(1/2\)</span>, and a width-<span class="math inline">\(w\)</span> layer has on average <span class="math inline">\(w/2\)</span> hinges there. At <span class="math inline">\(n = 3\)</span> the shallow network needs at least <span class="math inline">\(2^3 = 8\)</span> units (see the worked count above). On average, <span class="math inline">\(w = 8\)</span> provides only 4 hinges in the window, while <span class="math inline">\(w = 16\)</span> provides 8, just enough. This makes the failure at <span class="math inline">\(w \leq 8\)</span> and the marginal success at <span class="math inline">\(w = 16\)</span> plausible. It does not by itself explain the failure at <span class="math inline">\(w = 32\)</span>: once enough hinges are inside, success still depends on how they are spread over the teeth and on how training moves them, which is decided by the seed.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="code1.py-deterministic-inits" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="code1.py-deterministic-inits"><span class="header-section-number">3.2</span> code1.py — deterministic inits</h3>
+<p><code>lr=1e-2</code>, minibatch 256, cosine schedule, 800 epochs, best of 5 seeds.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>n</th>
+<th>shallow min w</th>
+<th>params</th>
+<th>gridMSE</th>
+<th>deep w=2 params</th>
+<th>gridMSE</th>
+<th>pieces</th>
+<th>2^n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>4</td>
+<td>13</td>
+<td>1.33e-06</td>
+<td>13</td>
+<td>2.666e-11</td>
+<td>6</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>16</td>
+<td>49</td>
+<td>2.83e-05</td>
+<td>19</td>
+<td>5.409e-10</td>
+<td>11</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>1.94e-02</td>
+<td>25</td>
+<td>4.114e-08</td>
+<td>21</td>
+<td>16</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>7.16e-02</td>
+<td>31</td>
+<td>3.001e-02</td>
+<td>30</td>
+<td>32</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.09e-02</td>
+<td>37</td>
+<td>5.564e-02</td>
+<td>45</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.39e-02</td>
+<td>43</td>
+<td>8.152e-02</td>
+<td>5</td>
+<td>128</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.40e-02</td>
+<td>49</td>
+<td>8.338e-02</td>
+<td>1</td>
+<td>256</td>
+</tr>
+</tbody>
+</table>
+<p>The deep network now works up to <code>n=4</code> on <strong>25 parameters</strong>, where shallow already needs more than 385. The lottery-like behavior of the shallow MLP is gone and we see a trend of progressive degradation with increasing <span class="math inline">\(n\)</span>.</p>
+<p>At <span class="math inline">\(n=3\)</span> a comparison between the two network architectures highlights higher efficiency of the deep MLP in not only representing <span class="math inline">\(f_n\)</span>, but also learning/approximating it.</p>
+<p><strong>NOTE:</strong> The <code>pieces</code> column is reporting the number of segments the approximator has and it should be bounded from below by the pieces in the actual function, i.e.&nbsp;<span class="math inline">\(2^n\)</span>. So this code and parameter choices are reliable for the deep-MLP only up to <span class="math inline">\(n=4\)</span>.</p>
+</section>
+<section id="code1a.py-the-depth-dependent-jitter" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="code1a.py-the-depth-dependent-jitter"><span class="header-section-number">3.3</span> code1a.py — the depth-dependent “jitter”</h3>
+<p>Identical to <code>code1</code> in every other respect, but the deep MLP now runs reliably up to <span class="math inline">\(n=5\)</span>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>n</th>
+<th>shallow min w</th>
+<th>params</th>
+<th>gridMSE</th>
+<th>deep w=2 params</th>
+<th>gridMSE</th>
+<th>pieces</th>
+<th>2^n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>4</td>
+<td>13</td>
+<td>1.33e-06</td>
+<td>13</td>
+<td>3.416e-11</td>
+<td>6</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>16</td>
+<td>49</td>
+<td>2.83e-05</td>
+<td>19</td>
+<td>5.549e-10</td>
+<td>11</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>1.94e-02</td>
+<td>25</td>
+<td>2.776e-09</td>
+<td>19</td>
+<td>16</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>7.16e-02</td>
+<td>31</td>
+<td><strong>2.281e-07</strong></td>
+<td>41</td>
+<td>32</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.09e-02</td>
+<td>37</td>
+<td>5.037e-02</td>
+<td>43</td>
+<td>64</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.39e-02</td>
+<td>43</td>
+<td>8.337e-02</td>
+<td>1</td>
+<td>128</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>w &gt; 128</td>
+<td>—</td>
+<td>8.40e-02</td>
+<td>49</td>
+<td>8.338e-02</td>
+<td>1</td>
+<td>256</td>
+</tr>
+</tbody>
+</table>
+<p>The shallow column is <strong>identical by construction</strong> — <code>ShallowMLP</code> has no noise term, so the changed line cannot affect it.</p>
+<p><strong>Visualization of the data</strong> * The number of parameters required to represent <span class="math inline">\(f_n(x)\)</span> by the two networks is plotted below. Note that further refinements, e.g.&nbsp;lowering the <code>lr</code> at larger <span class="math inline">\(n\)</span> improves the performance of the deep MLP. <img src="width-vs-depth_files/code1a_fig1_params_vs_n.png" class="img-fluid" alt="Representation cost"></p>
+<ul>
+<li><p>The accuracy of the learned representations is plotted below through the eyes of <code>gridMSE</code>. <img src="width-vs-depth_files/code1a_fig2_mse_vs_n.png" class="img-fluid" alt="Representation accuracy"></p></li>
+<li><p>The comparison of the degradation of the learned-approximator with <span class="math inline">\(n\)</span> between the shallow and deep MLPs is plotted below: <img src="width-vs-depth_files/code1a_fig3_functions.png" class="img-fluid" alt="Learned approximator"></p></li>
+</ul>
+<p><strong><em>The importance of the jitter:</em></strong> A comparison of the <code>gridMSE</code> reveals the impact of the depth-dependent jitter term, | n | code1 (fixed jitter) | code1a (<code>2^-n</code>) | ratio | |—|—|—|—| | 2 | 2.666e-11 | 3.416e-11 | — | | 3 | 5.409e-10 | 5.549e-10 | — | | 4 | 4.114e-08 | 2.776e-09 | 15x | | 5 | 3.001e-02 | 2.281e-07 | <strong>131,566x</strong> | | 6 | 5.564e-02 | 5.037e-02 | — | | 7 | 8.152e-02 | 8.337e-02 | — | | 8 | 8.338e-02 | 8.338e-02 | — |</p>
+<p>We also note that the number of <code>pieces</code> at <span class="math inline">\(n=4\)</span> for the deep MLP has reduced from <span class="math inline">\(21 \to 19\)</span>.</p>
+<p><strong><em>Why the jitter works:</em></strong> Since each tent block has gain 2, a perturbation at the first fold is amplified by <code>2^n</code> at the output. A <em>fixed</em> jitter is therefore not a fixed perturbation; its effect doubles with every layer. Measured init grid-MSE at <code>w=2</code> (<code>0</code> = exact; <code>8.3e-2</code> = Var<span class="math inline">\((y)\)</span> baseline):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>n</th>
+<th>code1 init</th>
+<th>code1a init</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2</td>
+<td>5.88e-03</td>
+<td>1.06e-04</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>3.90e-02</td>
+<td>4.48e-04</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td><strong>1.32e-01</strong></td>
+<td>1.52e-04</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><strong>1.81e-01</strong></td>
+<td>9.97e-05</td>
+</tr>
+</tbody>
+</table>
+<p>By <code>n=6</code> the <code>code1</code> starting point is <em>worse than predicting a constant</em> (exceeds Var<span class="math inline">\((y)\)</span>). Scaling by <code>2^-n</code> cancels the amplification and holds the init at <code>~1e-4</code> at every depth.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Worked estimate: the <span class="math inline">\(2^n\)</span> amplification and the <span class="math inline">\(\sim 10^{-4}\)</span> floor
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Away from its kink the tent map has slope <span class="math inline">\(|f'(u)| = 2\)</span>. A small error <span class="math inline">\(\delta\)</span> in the state after the first hidden layer therefore passes through <span class="math inline">\(n\)</span> tent applications (<span class="math inline">\(n - 1\)</span> hidden layers and the output layer) and arrives at the output as <span class="math inline">\(\approx 2^n \delta\)</span>. With parameter noise of standard deviation <span class="math inline">\(\varepsilon\)</span>, <span class="math inline">\(\delta \sim \varepsilon\)</span>, and the initial MSE is of order <span class="math display">\[
+\mathrm{MSE}_{\rm init} \sim \left(2^n \varepsilon\right)^2 .
+\]</span> For <code>code1.py</code>, <span class="math inline">\(\varepsilon = 10^{-2}\)</span>, this gives <span class="math inline">\(1.6\times 10^{-3}\)</span> at <span class="math inline">\(n = 2\)</span> and <span class="math inline">\(2.6 \times 10^{-2}\)</span> at <span class="math inline">\(n = 4\)</span>, against the measured <span class="math inline">\(5.9 \times 10^{-3}\)</span> and <span class="math inline">\(3.9 \times 10^{-2}\)</span> in the table above. The estimate is low by a factor of a few, as expected since several perturbed parameters contribute. At <span class="math inline">\(n = 6\)</span> it gives <span class="math inline">\(0.66\)</span>: the error is no longer small, the linear estimate breaks down, and the measured value saturates at <span class="math inline">\(0.13\)</span>, above <span class="math inline">\(\mathrm{Var}(y)\)</span>. For <code>code1a.py</code>, <span class="math inline">\(\varepsilon = 10^{-2}\, 2^{-n}\)</span>, and the estimate becomes <span class="math inline">\(\left(10^{-2}\right)^2 = 10^{-4}\)</span> independently of <span class="math inline">\(n\)</span>, which is the floor seen in the second column of the table above.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion-and-discussion" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="conclusion-and-discussion"><span class="header-section-number">4</span> Conclusion and Discussion</h2>
+<p>Here, we have clearly demonstrated the efficiency of a deep MLP against its shallow counterpart for representing and learning many-to-1 functions whose complexity grows exponentially with each iteration.</p>
+<p>We note that our findings resonate with recent similar works, especially <span class="citation" data-cites="chatziafratis2020">(<a href="#ref-chatziafratis2020" role="doc-biblioref">Chatziafratis et al. 2020</a>)</span> and <span class="citation" data-cites="milkert2023">(<a href="#ref-milkert2023" role="doc-biblioref">Milkert et al. 2023</a>)</span>.</p>
+<p>Other related works that inform the analysis here are <span class="citation" data-cites="telgarsky2015">(<a href="#ref-telgarsky2015" role="doc-biblioref">Telgarsky 2015</a>)</span>, <span class="citation" data-cites="telgarsky2016">(<a href="#ref-telgarsky2016" role="doc-biblioref">Telgarsky 2016</a>)</span>, <span class="citation" data-cites="montufar2014">(<a href="#ref-montufar2014" role="doc-biblioref">Montúfar et al. 2014</a>)</span>, and <span class="citation" data-cites="malach2021">(<a href="#ref-malach2021" role="doc-biblioref">Malach et al. 2021</a>)</span>.</p>
+</section>
+<section id="codebase" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="codebase"><span class="header-section-number">5</span> Codebase</h2>
+<p>See the <a href="https://github.com/shouvik-s/width-vs-depth">GitHub repository</a>.</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-chatziafratis2020" class="csl-entry" role="listitem">
+Chatziafratis, Vaggos, Sai Ganesh Nagarajan, Ioannis Panageas, and Xiao Wang. 2020. <span>“Depth-Width Trade-Offs for ReLU Networks via Sharkovsky’s Theorem.”</span> <em>International Conference on Learning Representations (ICLR)</em>. <a href="https://doi.org/10.48550/arXiv.1912.04378">https://doi.org/10.48550/arXiv.1912.04378</a>.
+</div>
+<div id="ref-malach2021" class="csl-entry" role="listitem">
+Malach, Eran, Gilad Yehudai, Shai Shalev-Shwartz, and Ohad Shamir. 2021. <span>“The Connection Between Approximation, Depth Separation and Learnability in Neural Networks.”</span> <em>Proceedings of the 34th Conference on Learning Theory (COLT)</em>, Proceedings of Machine Learning Research, vol. 134. <a href="https://doi.org/10.48550/arXiv.2102.00434">https://doi.org/10.48550/arXiv.2102.00434</a>.
+</div>
+<div id="ref-milkert2023" class="csl-entry" role="listitem">
+Milkert, Max, David Hyde, and Forrest Laine. 2023. <span>“Compelling ReLU Networks to Exhibit Exponentially Many Linear Regions at Initialization and During Training.”</span> In <em>arXiv Preprint arXiv:2311.18022</em>. Preprint. <a href="https://doi.org/10.48550/arXiv.2311.18022">https://doi.org/10.48550/arXiv.2311.18022</a>.
+</div>
+<div id="ref-montufar2014" class="csl-entry" role="listitem">
+Montúfar, Guido, Razvan Pascanu, Kyunghyun Cho, and Yoshua Bengio. 2014. <span>“On the Number of Linear Regions of Deep Neural Networks.”</span> <em>Advances in Neural Information Processing Systems 27 (NIPS 2014)</em>. <a href="https://doi.org/10.48550/arXiv.1402.1869">https://doi.org/10.48550/arXiv.1402.1869</a>.
+</div>
+<div id="ref-telgarsky2015" class="csl-entry" role="listitem">
+Telgarsky, Matus. 2015. <span>“Representation Benefits of Deep Feedforward Networks.”</span> In <em>arXiv Preprint arXiv:1509.08101</em>. Preprint. <a href="https://doi.org/10.48550/arXiv.1509.08101">https://doi.org/10.48550/arXiv.1509.08101</a>.
+</div>
+<div id="ref-telgarsky2016" class="csl-entry" role="listitem">
+Telgarsky, Matus. 2016. <span>“Benefits of Depth in Neural Networks.”</span> <em>Proceedings of the 29th Annual Conference on Learning Theory (COLT)</em>, Proceedings of Machine Learning Research, vol. 49: 1517–39. <a href="https://doi.org/10.48550/arXiv.1602.04485">https://doi.org/10.48550/arXiv.1602.04485</a>.
+</div>
+</div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@software{sur2026,
+  author = {Sur, Shouvik},
+  title = {Folding by {Depth:} {A} {Hands-On} {Reproduction} of
+    {Width–Depth} {Separation} in {ReLU} {Networks} {Learning}
+    {Iterated} {Maps}},
+  version = {v1.0.0},
+  date = {2026-10-29},
+  url = {https://github.com/shouvik-s/width-vs-depth},
+  doi = {10.5281/zenodo.22801706},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sur2026" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sur, Shouvik. 2026. <em>Folding by Depth: A Hands-On Reproduction of
+Width–Depth Separation in ReLU Networks Learning Iterated Maps</em>. V.
+v1.0.0. Released October 29. <a href="https://doi.org/10.5281/zenodo.22801706">https://doi.org/10.5281/zenodo.22801706</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

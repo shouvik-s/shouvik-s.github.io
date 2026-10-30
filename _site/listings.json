@@ -2,6 +2,7 @@
   {
     "listing": "/notes.html",
     "items": [
+      "/notes/width-vs-depth.html",
       "/notes/retraining-boundaries.html",
       "/notes/Boolean-circuits_MLP.html"
     ]
