@@ -97,9 +97,13 @@ Along the second direction, (i) I study ML algorithms and architectures using th
 
 ::: {.callout-note appearance="minimal"}
 ### Topological Response at Strong Fields
+**Fully nonequilibrium Hall response from Berry curvature**  
+*__S. Sur__, L. Chen, Y. Wang, C. Setty,  S. Paschen, Q. Si*  
+[Phys. Rev. Lett. 137, 216303 (2026)](https://doi.org/10.1103/cj8b-4sp4)
+
 **Nonperturbative Nonlinear Hall Effect in Nonequilibrium Steady States**  
 *L. Geng, M. Eckstein, L. Chen, __S. Sur__, S. Paschen, Q. Si, P. Werner*  
-[arXiv:2607.01519 (2026)](https://arxiv.org/abs/2607.01519)
+[Phys. Rev. Lett. 137, 216304 (2026)](https://doi.org/10.1103/dy42-1yz7)
 :::
 
 ::: {.callout-note appearance="minimal"}

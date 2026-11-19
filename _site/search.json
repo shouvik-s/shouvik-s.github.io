@@ -81,7 +81,7 @@
     "href": "notes.html",
     "title": "Notes on selected aspects of ongoing work",
     "section": "",
-    "text": "Welcome to the notes section. Click on any note below to view it as a webpage or download it as a PDF.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFolding by Depth\n\n\nA Hands-On Reproduction of Width–Depth Separation in ReLU Networks Learning Iterated Maps\n\n\n\n\n\nOct 29, 2026\n\n\nShouvik Sur\n\n\n\n\n\n\n\n\n\n\n\n\nRetraining a small neural network: reorienting and building decision boundaries\n\n\nWe track the epochal evolution of the decision boundaries of a 3-3-1 MLP, pre-trained for one task, as it learns a new task.\n\n\n\n\n\nOct 28, 2026\n\n\nShouvik Sur\n\n\n\n\n\n\n\n\n\n\n\n\nNeural network representation of Boolean circuits\n\n\nWe discuss elementary aspects of representing logic gates with perceptrons\n\n\n\n\n\nOct 9, 2026\n\n\nShouvik Sur\n\n\n\n\n\nNo matching items"
+    "text": "Welcome to the notes section. Click on any note below to view it as a webpage or download it as a PDF.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFolding by Depth\n\n\n\nWidth–Depth Separation in ReLU Networks Learning Iterated Maps\n\n\n\n\n\n\nOct 30, 2026\n\n\nShouvik Sur\n\n\n\n\n\n\n\n\n\n\n\n\nRetraining a small neural network: reorienting and building decision boundaries\n\n\n\nWe track the epochal evolution of the decision boundaries of a 3-3-1 MLP, pre-trained for one task, as it learns a new task.\n\n\n\n\n\n\nOct 28, 2026\n\n\nShouvik Sur\n\n\n\n\n\n\n\n\n\n\n\n\nNeural network representation of Boolean circuits\n\n\n\nWe discuss elementary aspects of representing logic gates with perceptrons\n\n\n\n\n\n\nOct 9, 2026\n\n\nShouvik Sur\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "research.html",
